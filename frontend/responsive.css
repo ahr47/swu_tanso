@@ -1,0 +1,99 @@
+/* Preserve the original desktop layout and let its content flow on narrow screens. */
+.illustration-canvas{position:relative;width:560px;height:500px;transform-origin:top left;transform:scale(var(--illustration-scale,1))}
+.panel-heading{padding:32px 108px 0;width:100%}.panel-navigation{padding:0 108px 24px;width:100%}
+@media(min-width:901px) and (max-width:1350px){[data-node-id="29:60"]{padding-inline:64px!important;gap:40px!important}[data-name="히어로 제목"]{font-size:44px!important}}
+[data-node-id="24:586"]{position:relative!important;top:0!important;width:100%!important;height:auto!important}
+[data-node-id="24:585"]{height:auto!important;min-height:calc(100vh - 84px)}
+[data-name="Main Content Layout:margin"]>[data-name="Main Content Layout"]{margin-inline:auto}
+@media(min-width:1600px){#app>div>[data-name="Main"],#app>div>[data-name="Main Content Layout:margin"]{padding-inline:max(80px,calc((100% - 1440px)/2))}}
+@media(max-width:1200px){
+ #app>div>[data-name="Header"],#app>div>[data-name="상단 내비게이션"]{padding-inline:28px!important}
+ [data-name="Stepper"]{gap:2px!important}[data-name^="Step "]{width:64px!important}[data-name="Stepper"]>[data-name="Line"]{width:22px!important}
+ [data-node-id="29:60"]{padding-inline:48px!important;gap:32px!important}
+ [data-node-id="24:586"]{padding-inline:28px!important}
+ [data-node-id="24:774"]{padding-inline:28px!important}
+ [data-name="Aside - Left Sidebar: Category"]{width:210px!important}
+ [data-name^="Card "]{min-width:0!important;width:100%!important}
+}
+@media(max-width:900px){
+ #app>div>[data-name="Header"]{flex-wrap:wrap!important;gap:16px!important;padding:16px 24px!important}
+ [data-name="Stepper"]{order:3;width:100%!important;justify-content:center!important}
+ #app>div>[data-name="Header"] [data-name="Logo"]{max-width:150px}
+ #app>div>[data-name="Header"] [data-name="Logo"] img{object-fit:contain}
+ [data-node-id="29:60"]{flex-direction:column!important;align-items:stretch!important;padding:48px 28px!important}
+ [data-node-id="29:60"]>div{width:100%!important;flex:auto!important}
+ [data-name="히어로 제목"]{font-size:42px!important}
+ [data-node-id="29:60"]>div:last-child{max-width:520px;align-self:center}
+ [data-node-id="24:587"]{display:flex!important;flex-direction:column!important;gap:24px!important;width:100%!important}
+ [data-node-id="24:588"],[data-node-id="24:681"]{width:100%!important}
+ [data-name="Main Content Layout"]{padding-inline:0!important}
+ [data-name="Aside - Left Sidebar: Category"]{width:180px!important}
+ [data-name^="Goal / "]{flex:1 1 calc(50% - 16px)!important}
+ [data-name="Goals"]{flex-wrap:wrap!important}
+ .dialog-panel [data-name="Dialog actions"],.dialog-panel [data-name="Action row"],.dialog-panel [data-name="Constraint label"]{width:100%!important}
+}
+@media(max-width:640px){
+ [data-name="상단 내비게이션"]{height:76px!important;padding-inline:16px!important;gap:8px!important}
+ [data-name="상단 내비게이션"] [data-name="주요 메뉴"]{display:none}
+ [data-name="상단 내비게이션"] [data-name="Logo"]{width:145px!important;overflow:visible!important;flex-shrink:1!important}
+ [data-name="상단 내비게이션"] [data-name="내비게이션 액션"]{flex-shrink:0!important}
+ [data-name="친환경 분석 일러스트"]{height:auto!important;aspect-ratio:560/500}
+ #app[data-screen="home"]>div>div:not(:first-child){height:auto!important;padding:48px 20px!important}
+ #app[data-screen="home"] [data-name="섹션 제목"],#app[data-screen="home"] [data-name="제목 영역"]{width:100%!important;max-width:100%!important}
+ #app[data-screen="home"] [data-name="이용 단계"]{flex-wrap:wrap!important;justify-content:center!important}
+ #app[data-screen="home"] [data-name="단계 묶음"]{width:calc(50% - 5px)!important}
+ #app[data-screen="home"] [data-name="단계 카드"]{width:100%!important;padding:16px!important}
+ #app[data-screen="home"] [data-name="단계 묶음"]>[data-name="arrow-right"]{display:none}
+ #app[data-screen="home"] [data-name="대시보드 화면"]{width:100%!important;padding:18px!important}
+ #app[data-screen="home"] [data-name="대시보드 상단"],#app[data-screen="home"] [data-name="요약 지표"],#app[data-screen="home"] [data-name="분석 차트"],#app[data-screen="home"] [data-name="장점 머리글"],#app[data-screen="home"] [data-name="사례 머리글"],#app[data-screen="home"] [data-name="추천 머리글"],#app[data-screen="home"] [data-name="인사이트 패널"],#app[data-screen="home"] [data-name="CTA 패널"],#app[data-screen="home"] [data-name="푸터 상단"],#app[data-screen="home"] [data-name="푸터 하단"]{flex-direction:column!important;align-items:stretch!important;gap:24px!important;width:100%!important;height:auto!important}
+ #app[data-screen="home"] [data-name="요약 카드"],#app[data-screen="home"] [data-name="비용과 탄소 비교 차트"],#app[data-screen="home"] [data-name="탄소 배출 구성"],#app[data-screen="home"] [data-name="인사이트 소개"],#app[data-screen="home"] [data-name="팁 목록"],#app[data-screen="home"] [data-name="CTA 문구"],#app[data-screen="home"] [data-name="브랜드 소개"]{width:100%!important;min-width:0!important;flex:auto!important;height:auto!important}
+ #app[data-screen="home"] [data-name="차트 본문"]{overflow-x:auto!important}
+ #app[data-screen="home"] [data-name="사례 카드 목록"],#app[data-screen="home"] [data-name="추천 카드 목록"]{display:flex!important;flex-direction:column!important;gap:20px!important}
+ #app[data-screen="home"] [data-name="사례 카드 목록"]>div,#app[data-screen="home"] [data-name="추천 카드 목록"]>div{width:100%!important;min-width:0!important;flex:auto!important}
+ #app[data-screen="home"] [data-name="장점 카드"]{width:100%!important;min-width:100%!important;flex:auto!important}
+ #app[data-screen="home"] [data-name="서비스 핵심 장점"]{flex-wrap:wrap!important}
+ #app[data-screen="home"] [data-name="인사이트 패널"]{padding:24px!important}
+ #app[data-screen="home"] [data-name="팁 카드"]{width:100%!important;height:auto!important}
+ #app[data-screen="home"] [data-name="마지막 CTA"],#app[data-screen="home"] [data-name="푸터"]{height:auto!important;padding:24px 0!important;width:100%!important}
+ #app p{white-space:normal}
+ #app [data-name="Title"]{width:100%!important;min-width:0!important}
+ #app [data-name="Title"]>p:nth-child(2){font-size:26px!important}
+ [data-name^="Row /"],[data-name="Goals"]{flex-direction:column!important;align-items:stretch!important}
+ [data-name^="Row /"]>div{width:100%!important;min-width:0!important;flex:auto!important}
+ [data-name^="Card /"]{width:100%!important;min-width:0!important;flex:auto!important}
+ [data-name="Carbon Report"]{flex-wrap:wrap!important;height:auto!important;padding:24px!important}
+ [data-name="Carbon Report"]>div{max-width:100%}
+ [data-name="Carbon Report"]>div:nth-child(2){min-width:200px!important;flex:1 1 200px!important}
+ [data-name="Carbon Report"]>a{width:100%!important;justify-content:center!important}
+ [data-name^="Recommendation "]{flex-wrap:wrap!important;gap:12px!important}
+ [data-name^="Recommendation "]>[data-name="Text"]{min-width:200px!important;flex:1 1 200px!important}
+ [data-name="Row / Actions"],[data-name="Bottom bar"],[data-name="Summary / Actions"]{flex-wrap:wrap!important;gap:12px!important}
+ [data-name^="Goal / "]{width:100%!important;flex:auto!important}
+ .panel-heading{padding:24px 16px 0}.panel-navigation{padding:0 16px 24px}
+ #app>div{overflow-x:clip}
+ #app>div>[data-name="상단 내비게이션"]{height:76px!important;padding-inline:16px!important}
+ [data-name="상단 내비게이션"] [data-name="Logo"]{transform:scale(.75);transform-origin:left center;width:146px}
+ [data-name="내비게이션 액션"]{gap:12px!important}[data-name="내비게이션 액션"] p{font-size:11px!important}[data-name="주요 버튼"]{padding:10px 12px!important}
+ [data-name="히어로 제목"]{font-size:36px!important}
+ #app[data-screen="home"]>div>div:not(:first-child){padding-inline:20px!important}
+ #app[data-screen="home"] [data-name*="그리드"],#app[data-screen="home"] [data-name*="카드 목록"],#app[data-screen="home"] [data-name*="카드 그리드"]{flex-wrap:wrap!important;display:flex!important;gap:16px!important}
+ #app[data-screen="home"] [data-name*="그리드"]>div,#app[data-screen="home"] [data-name*="카드 목록"]>div{min-width:calc(50% - 16px)!important;flex:1 1 calc(50% - 16px)!important}
+ [data-name="Stepper"]>[data-name^="Step "]{width:48px!important}[data-name="Stepper"] p{font-size:10px!important}[data-name="Stepper"]>[data-name="Line"]{width:16px!important}
+ #app>div>[data-name="Main"],#app>div>[data-name="Content"],#app>div>[data-name="Main Content Layout:margin"]{padding-inline:16px!important;padding-top:24px!important}
+ [data-node-id="24:586"]{padding:24px 16px!important;gap:24px!important}
+ [data-node-id="24:588"]{padding:24px!important;gap:24px!important}
+ [data-node-id="24:597"]{display:flex!important;flex-direction:column!important;gap:18px!important}
+ [data-node-id="24:597"]>div{width:100%!important}
+ [data-name="Main Content Layout"]{max-width:100%!important}
+ [data-name="Main Content Layout"] [data-name="Section - Top: Add Product"]{flex-direction:column!important}
+ [data-name="Aside - Left Sidebar: Category"]{width:100%!important;border-right-width:0!important;padding-right:0!important}
+ [data-name="Nav"]{flex-direction:row!important;flex-wrap:wrap!important;gap:4px!important}
+ [data-name="Nav"]>a{width:calc(50% - 4px)!important;padding:8px!important}
+ [data-name="Nav"]>a p{font-size:13px!important}
+ [data-name="Section - Right: Search & Product 2x2 Grid"]{width:100%!important}
+ [data-name^="Card "]{height:auto!important;min-height:80px;padding:12px!important}[data-name^="Card "] p{font-size:13px!important}
+ .dialog-overlay{padding:12px}.dialog-overlay>.dialog-panel{max-height:calc(100dvh - 24px);border-radius:20px}
+ .dialog-panel>div{padding:24px!important}.dialog-panel [data-name]{max-width:100%}
+ .dialog-panel [data-name="Constraint checkboxes"],.dialog-panel [data-name="Constraints"]{flex-wrap:wrap!important;height:auto!important}
+ .dialog-panel [data-name="Action row"]{height:auto!important;flex-wrap:wrap!important}.dialog-panel [data-name="Action row"]>p{display:none}
+}

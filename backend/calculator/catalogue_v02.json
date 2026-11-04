@@ -1,0 +1,1035 @@
+{
+  "data_status": "사용자 제공 API v02 기준 전달 데이터. 실DB 검증·원출처 재검증을 수행한 데이터가 아님. 기존 WEIGHT 버전과 혼합 금지.",
+  "factor_version": "v1.0-2026-10",
+  "items": [
+    {
+      "item_id": "a4_paper",
+      "item_name": "A4 용지",
+      "category": "인쇄물·홍보물",
+      "input_unit": "장",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [],
+      "description": "실제 사용한 종이 장수를 입력하세요"
+    },
+    {
+      "item_id": "leaflet",
+      "item_name": "리플릿",
+      "category": "인쇄물·홍보물",
+      "input_unit": "장",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "a5",
+          "label": "A5",
+          "is_default": false
+        },
+        {
+          "variant": "a4",
+          "label": "A4",
+          "is_default": true
+        },
+        {
+          "variant": "a3",
+          "label": "A3",
+          "is_default": false
+        }
+      ],
+      "notes": [
+        "잠정값",
+        "규격별 면적 비례 환산값 포함"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "poster",
+      "item_name": "포스터",
+      "category": "인쇄물·홍보물",
+      "input_unit": "장",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "a4",
+          "label": "A4",
+          "is_default": false
+        },
+        {
+          "variant": "a3",
+          "label": "A3",
+          "is_default": true
+        },
+        {
+          "variant": "a2",
+          "label": "A2",
+          "is_default": false
+        }
+      ],
+      "notes": [
+        "잠정값",
+        "규격별 면적 비례 환산값 포함"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "name_tag",
+      "item_name": "종이 명찰·프로그램북",
+      "category": "인쇄물·홍보물",
+      "input_unit": "부",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "잠정값",
+        "86×55mm 명찰 1개 기준; 여러 장 프로그램북에는 맞지 않음"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "banner",
+      "item_name": "현수막",
+      "category": "인쇄물·홍보물",
+      "input_unit": "개",
+      "calc_type": "AREA",
+      "input_method": "dimension",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "참고값"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "water",
+      "item_name": "생수",
+      "category": "음료·일회용품",
+      "input_unit": "병",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "330ml",
+          "label": "330mL",
+          "is_default": false
+        },
+        {
+          "variant": "500ml",
+          "label": "500mL",
+          "is_default": true
+        },
+        {
+          "variant": "1l",
+          "label": "1L",
+          "is_default": false
+        },
+        {
+          "variant": "1.5l",
+          "label": "1.5L",
+          "is_default": false
+        },
+        {
+          "variant": "2l",
+          "label": "2L",
+          "is_default": false
+        }
+      ],
+      "notes": [],
+      "description": null
+    },
+    {
+      "item_id": "can_drink",
+      "item_name": "캔 음료",
+      "category": "음료·일회용품",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "210ml",
+          "label": "210mL",
+          "is_default": false
+        },
+        {
+          "variant": "250ml",
+          "label": "250mL",
+          "is_default": true
+        }
+      ],
+      "notes": [
+        "대표 제품 값 기준"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "pet_drink",
+      "item_name": "페트 음료",
+      "category": "음료·일회용품",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "500ml",
+          "label": "500mL",
+          "is_default": true
+        },
+        {
+          "variant": "1.5l",
+          "label": "1.5L",
+          "is_default": false
+        }
+      ],
+      "notes": [
+        "대표 제품 값 기준"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "paper_cup",
+      "item_name": "종이컵(+PP 뚜껑)",
+      "category": "음료·일회용품",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "출처 사이트는 팀 명세서 기준; 계수 산출 설명은 학술자료"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "pet_cup",
+      "item_name": "PET컵(+PET 뚜껑)",
+      "category": "음료·일회용품",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [],
+      "description": null
+    },
+    {
+      "item_id": "cutlery_set",
+      "item_name": "일회용 수저 세트",
+      "category": "음료·일회용품",
+      "input_unit": "세트",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "원본 kgCO₂ 표기를 kgCO₂e로 간주한 제공값"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "hygiene_gloves",
+      "item_name": "위생장갑",
+      "category": "음료·일회용품",
+      "input_unit": "매",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "pack_400",
+          "label": "400매입",
+          "is_default": true
+        },
+        {
+          "variant": "pack_150",
+          "label": "150매입",
+          "is_default": false
+        }
+      ],
+      "notes": [],
+      "description": null
+    },
+    {
+      "item_id": "wrap_film",
+      "item_name": "포장랩",
+      "category": "음료·일회용품",
+      "input_unit": "롤",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [],
+      "description": "25cm × 250m 1롤 기준"
+    },
+    {
+      "item_id": "sandwich",
+      "item_name": "샌드위치",
+      "category": "음식·간식",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "잠정값",
+        "150g 기준"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "pizza",
+      "item_name": "피자",
+      "category": "음식·간식",
+      "input_unit": "조각",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "잠정값",
+        "103g 기준"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "snack",
+      "item_name": "봉지과자",
+      "category": "음식·간식",
+      "input_unit": "봉지",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "regular",
+          "label": "일반",
+          "is_default": true
+        },
+        {
+          "variant": "small",
+          "label": "소형",
+          "is_default": false
+        }
+      ],
+      "notes": [
+        "잠정값",
+        "ADEME·CarbonCloud 계수 평균 기반"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "choco_bar",
+      "item_name": "초콜릿바",
+      "category": "음식·간식",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "잠정값",
+        "50g 기준"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "jelly",
+      "item_name": "젤리",
+      "category": "음식·간식",
+      "input_unit": "봉지",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "잠정값",
+        "90g 기준",
+        "출처 사이트 표기는 팀 명세서 기준; 계수 설명은 The Big Climate Database, 재확인 필요"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "cup_noodle",
+      "item_name": "컵라면",
+      "category": "음식·간식",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "large",
+          "label": "큰컵",
+          "is_default": true
+        },
+        {
+          "variant": "small",
+          "label": "작은컵",
+          "is_default": false
+        }
+      ],
+      "notes": [
+        "잠정값",
+        "출처 사이트 표기는 팀 명세서 기준; 계수 설명은 The Big Climate Database"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "eco_bag",
+      "item_name": "에코백",
+      "category": "굿즈",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "잠정값",
+        "130g 기준",
+        "출처 사이트와 14.1 kgCO₂e/kg 계수 산출 설명의 연결 재확인 필요"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "tshirt",
+      "item_name": "티셔츠",
+      "category": "굿즈",
+      "input_unit": "벌",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "참고값"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "tumbler",
+      "item_name": "텀블러",
+      "category": "굿즈",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_variant",
+      "is_active": true,
+      "variants": [
+        {
+          "variant": "general",
+          "label": "일반",
+          "is_default": true
+        },
+        {
+          "variant": "insulated",
+          "label": "보온",
+          "is_default": false
+        }
+      ],
+      "notes": [],
+      "description": null
+    },
+    {
+      "item_id": "ballpoint_pen",
+      "item_name": "볼펜",
+      "category": "굿즈",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "참고값",
+        "제공 계수와 출처 수치 불일치 재확인 필요"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "acrylic_keyring",
+      "item_name": "아크릴 키링",
+      "category": "굿즈",
+      "input_unit": "개",
+      "calc_type": "COUNT",
+      "input_method": "count_only",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "잠정값",
+        "6g 기준",
+        "혼합 플라스틱 대리 계수이며 PMMA 직접 계수 아님"
+      ],
+      "description": null
+    },
+    {
+      "item_id": "delivery",
+      "item_name": "일반 배송",
+      "category": "배송",
+      "input_unit": "회",
+      "calc_type": "COUNT",
+      "input_method": "fixed_use",
+      "is_active": true,
+      "variants": null,
+      "notes": [
+        "대표값 기준"
+      ],
+      "description": null
+    }
+  ],
+  "factors": [
+    {
+      "item_id": "a4_paper",
+      "variant": "default",
+      "value": "0.0056",
+      "unit": "kgCO₂e/장",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "leaflet",
+      "variant": "a5",
+      "value": "0.006316",
+      "unit": "kgCO₂e/장",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "leaflet",
+      "variant": "a4",
+      "value": "0.012631",
+      "unit": "kgCO₂e/장",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "leaflet",
+      "variant": "a3",
+      "value": "0.025262",
+      "unit": "kgCO₂e/장",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "poster",
+      "variant": "a4",
+      "value": "0.012631",
+      "unit": "kgCO₂e/장",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "poster",
+      "variant": "a3",
+      "value": "0.025262",
+      "unit": "kgCO₂e/장",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "poster",
+      "variant": "a2",
+      "value": "0.050523",
+      "unit": "kgCO₂e/장",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "name_tag",
+      "variant": "default",
+      "value": "0.000946",
+      "unit": "kgCO₂e/부",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "banner",
+      "variant": "default",
+      "value": "0.9511",
+      "unit": "kgCO₂e/㎡",
+      "calc_type": "AREA",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ECOSQUARE · 국내 통합 DB",
+      "source_url": "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500",
+      "source_year": null,
+      "confidence": "D",
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "water",
+      "variant": "330ml",
+      "value": "0.0769",
+      "unit": "kgCO₂e/병",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "water",
+      "variant": "500ml",
+      "value": "0.0793",
+      "unit": "kgCO₂e/병",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "water",
+      "variant": "1l",
+      "value": "0.1658",
+      "unit": "kgCO₂e/병",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [
+        "대표 제품 값 기준"
+      ],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "water",
+      "variant": "1.5l",
+      "value": "0.1551",
+      "unit": "kgCO₂e/병",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [
+        "대표 제품 값 기준"
+      ],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "water",
+      "variant": "2l",
+      "value": "0.2258",
+      "unit": "kgCO₂e/병",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "can_drink",
+      "variant": "210ml",
+      "value": "0.0851",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "can_drink",
+      "variant": "250ml",
+      "value": "0.0936",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "pet_drink",
+      "variant": "500ml",
+      "value": "0.1798",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "pet_drink",
+      "variant": "1.5l",
+      "value": "0.3955",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "paper_cup",
+      "variant": "default",
+      "value": "0.0428",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "pet_cup",
+      "variant": "default",
+      "value": "0.0778",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국전과정평가학회 학술자료",
+      "source_url": "https://www.e-lca.org/archive/view_article_pubreader?pid=kjlca-27-2-99",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "cutlery_set",
+      "variant": "default",
+      "value": "0.110",
+      "unit": "kgCO₂e/세트",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "기후행동 1.5℃ · 가정편",
+      "source_url": "https://www.gihoo.or.kr/menu.es?mid=a11302000000",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "hygiene_gloves",
+      "variant": "pack_400",
+      "value": "0.012437",
+      "unit": "kgCO₂e/매",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "hygiene_gloves",
+      "variant": "pack_150",
+      "value": "0.012962",
+      "unit": "kgCO₂e/매",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "wrap_film",
+      "variant": "default",
+      "value": "4.2327",
+      "unit": "kgCO₂e/롤",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "한국환경산업기술원 · 공공데이터포털",
+      "source_url": "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "sandwich",
+      "variant": "default",
+      "value": "0.560",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ADEME AGRIBALYSE 3.2",
+      "source_url": "https://agribalyse.ademe.fr/app",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "pizza",
+      "variant": "default",
+      "value": "0.190",
+      "unit": "kgCO₂e/조각",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ADEME AGRIBALYSE 3.2",
+      "source_url": "https://agribalyse.ademe.fr/app",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "snack",
+      "variant": "regular",
+      "value": "0.152",
+      "unit": "kgCO₂e/봉지",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ADEME AGRIBALYSE 3.2",
+      "source_url": "https://agribalyse.ademe.fr/app",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "snack",
+      "variant": "small",
+      "value": "0.092",
+      "unit": "kgCO₂e/봉지",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ADEME AGRIBALYSE 3.2",
+      "source_url": "https://agribalyse.ademe.fr/app",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "choco_bar",
+      "variant": "default",
+      "value": "0.363",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ADEME AGRIBALYSE 3.2",
+      "source_url": "https://agribalyse.ademe.fr/app",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "jelly",
+      "variant": "default",
+      "value": "0.084",
+      "unit": "kgCO₂e/봉지",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "ADEME AGRIBALYSE 3.2",
+      "source_url": "https://agribalyse.ademe.fr/app",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "cup_noodle",
+      "variant": "large",
+      "value": "0.232",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "IPB Repository · 인스턴트 라면 LCA 연구",
+      "source_url": null,
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "cup_noodle",
+      "variant": "small",
+      "value": "0.137",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "IPB Repository · 인스턴트 라면 LCA 연구",
+      "source_url": null,
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "eco_bag",
+      "variant": "default",
+      "value": "1.833",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "영국 환경청 LCA 데이터 정리 자료 · RSC",
+      "source_url": "https://edu.rsc.org/download?ac=531823",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "material"
+    },
+    {
+      "item_id": "tshirt",
+      "variant": "default",
+      "value": "6.5",
+      "unit": "kgCO₂e/벌",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "Arbor",
+      "source_url": "https://www.arbor.eco/carbon-footprint/t-shirt",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "tumbler",
+      "variant": "general",
+      "value": "0.543",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "24Bottles LCA 인용 · Green Alliance",
+      "source_url": "https://green-alliance.org.uk/wp-content/uploads/2021/11/losing_the_bottle_methodology.pdf",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "tumbler",
+      "variant": "insulated",
+      "value": "1.137",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "24Bottles LCA 인용 · Green Alliance",
+      "source_url": "https://green-alliance.org.uk/wp-content/uploads/2021/11/losing_the_bottle_methodology.pdf",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "ballpoint_pen",
+      "variant": "default",
+      "value": "0.005",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "Fountain Pen Revolution 블로그",
+      "source_url": "https://kr-fprevolutionusa.glopalstore.com/blogs/news/carbon-footprint-pen-design-key-facts",
+      "source_year": null,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "production"
+    },
+    {
+      "item_id": "acrylic_keyring",
+      "variant": "default",
+      "value": "0.0305",
+      "unit": "kgCO₂e/개",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "미국 EPA LCA 보고서 (2018)",
+      "source_url": "https://www.epa.gov/sites/default/files/2018-02/documents/lca_mfd_printer.pdf",
+      "source_year": 2018,
+      "confidence": null,
+      "notes": [],
+      "scope_group": "material"
+    },
+    {
+      "item_id": "delivery",
+      "variant": "default",
+      "value": "0.33",
+      "unit": "kgCO₂e/회",
+      "calc_type": "COUNT",
+      "factor_version": "v1.0-2026-10",
+      "source_name": "UK DEFRA(BEIS) 온실가스 환산계수 2018",
+      "source_url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2018",
+      "source_year": 2018,
+      "confidence": "D",
+      "notes": [],
+      "scope_group": "transport"
+    }
+  ]
+}

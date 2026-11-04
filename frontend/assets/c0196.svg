@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="22" height="30" viewBox="0 0 22 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Tree" clip-path="url(#clip0_0_10)">
+<rect id="Rectangle" x="9" y="22.2" width="3.6" height="7.8" fill="#F2EDA8"/>
+<path id="Polygon" d="M10.8 3.6L20.1531 17.55H1.44693L10.8 3.6Z" fill="#9EDD9E"/>
+<path id="Polygon_2" d="M10.8 0L18.0746 11.25H3.52539L10.8 0Z" fill="#9EDD9E"/>
+</g>
+<defs>
+<clipPath id="clip0_0_10">
+<rect width="22" height="30" fill="white"/>
+</clipPath>
+</defs>
+</svg>

@@ -1,0 +1,63 @@
+/* Give each item field its own layout area. Figma's option slot was 1 × 1 px,
+   so its visible children previously painted over the adjacent shipping chip. */
+#app[data-screen^="items-"] [data-name="품목 행"]{
+  container:item-input / inline-size;
+  height:auto!important;
+  min-height:126px;
+  width:100%!important;
+}
+#app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]{
+  display:grid!important;
+  grid-template-columns:minmax(148px,1fr) 90px minmax(200px,216px) 124px minmax(140px,1fr) 90px;
+  grid-template-areas:"name quantity options shipping price details";
+  align-items:center!important;
+  gap:16px!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:92px;
+}
+#app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="품목 이름 영역"]{grid-area:name;width:auto!important;min-width:0}
+#app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="수량 입력"]{grid-area:quantity;width:90px!important;align-self:start;margin-top:16px}
+#app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="옵션 슬롯"]{grid-area:options;display:flex!important;flex-wrap:wrap;align-items:flex-start;gap:12px;width:auto!important;height:auto!important;min-width:0;align-self:start;margin-top:16px}
+#app[data-screen^="items-"] [data-name="옵션 슬롯"]>div{max-width:100%;min-width:0}
+#app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="품목별 배송 영역"]{grid-area:shipping;min-width:0;align-self:start;margin-top:16px}
+#app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="가변 여백"]{display:none!important}
+#app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="평균 단가 및 행 합계"]{grid-area:price;width:auto!important;min-width:0}
+#app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="상세 설정 버튼 영역"]{grid-area:details;width:auto!important;min-width:0;justify-self:end}
+#app[data-screen^="items-"] [data-name="아이콘과 품목명"]{width:100%;min-width:0}
+#app[data-screen^="items-"] [data-name="아이콘과 품목명"]>p{width:auto!important;min-width:0;white-space:normal;overflow-wrap:anywhere}
+#app[data-screen^="items-"] [data-name="품목별 배송 영역"]>[data-node-id="126:1103"],
+#app[data-screen^="items-"] [data-name="품목 이름 영역"]>[data-node-id="126:1081"]{min-height:16px}
+#app[data-screen^="items-"] [data-name="배송 칩과 도움말"]{width:124px;height:28px;flex-shrink:0;align-items:center!important}
+#app[data-screen^="items-"] [data-name="품목 행"] .live-field{padding:7px 10px;font-size:13px;line-height:18px}
+#app[data-screen^="items-"] [data-name="단가 라벨과 도움말"]{height:auto!important;min-height:22px;flex-wrap:wrap}
+#app[data-screen^="items-"] [data-name="품목 행"] [data-name="상세 설정 펼침 내용"]{width:100%!important}
+@container item-input (max-width:959px){
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]{
+    grid-template-columns:minmax(148px,1fr) 90px minmax(200px,1.2fr) 124px;
+    grid-template-areas:"name quantity options shipping" "price price price details";
+    align-items:start!important;
+  }
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="평균 단가 및 행 합계"]{align-self:center}
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="상세 설정 버튼 영역"]{align-self:center}
+}
+@container item-input (max-width:649px){
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]{
+    grid-template-columns:minmax(0,1fr) 124px;
+    grid-template-areas:"name name" "quantity shipping" "options options" "price price" "details details";
+    gap:16px 12px!important;
+    min-height:0;
+  }
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="수량 입력"],
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="옵션 슬롯"],
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="품목별 배송 영역"]{margin-top:0}
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="품목 이름 영역"]>p:first-child{display:none}
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="옵션 슬롯"]:empty{display:none}
+  #app[data-screen^="items-"] [data-name="공통 품목 입력 영역"]>[data-name="상세 설정 버튼 영역"]{justify-self:start}
+}
+@media(max-width:640px){
+  #app[data-screen^="items-"] [data-name="Added Items Section (추가한 품목)"]{padding:20px 16px!important}
+  #app[data-screen^="items-"] [data-name="품목 행"]{padding:20px 0!important}
+  #app[data-screen^="items-"] [data-name="추가한 품목 제목 / 공통"]{flex-wrap:wrap;gap:12px!important}
+  #app[data-screen^="items-"] [data-name="배송 전체 선택과 개수"]{flex-wrap:wrap!important;gap:8px!important}
+}

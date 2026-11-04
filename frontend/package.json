@@ -1,0 +1,15 @@
+{
+  "name": "julissue",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Figma 기반 탄소줄이슈 웹사이트",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "start": "npm run build && node serve.mjs",
+    "check": "node --check app.js && node --check sources-dialog.js && node --check serve.mjs && node --check scripts/build.mjs"
+  },
+  "engines": {
+    "node": ">=20.11"
+  }
+}

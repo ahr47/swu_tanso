@@ -1,0 +1,15 @@
+# Python
+venv/
+.venv/
+__pycache__/
+
+# 환경변수 (비밀값)
+.env
+
+# Frontend
+node_modules/
+dist/
+build/
+
+# Mac
+.DS_Store

@@ -1,0 +1,11 @@
+# 백엔드 공통 라이브러리 (Python 3.9 이상)
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pydantic==2.10.4
+pydantic-settings==2.7.0
+
+# 테스트
+pytest==8.3.4
+httpx==0.28.1
+
+# DB 드라이버는 백엔드1이 정해서 추가 (예: psycopg[binary])

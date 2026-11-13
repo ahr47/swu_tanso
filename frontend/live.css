@@ -1,0 +1,58 @@
+/* live.js 가 API 데이터로 그리는 요소 (품목 행, 도넛, 안내 메시지 등). 색·글꼴은 기존 디자인과 같게 */
+.lv-empty{margin:0;padding:28px 8px;color:#6b7280;font:500 14px Pretendard,"Noto Sans KR",sans-serif;text-align:center;width:100%}
+.lv-warning{margin:6px 0 0;color:#8a6d00;font:500 13px Pretendard,"Noto Sans KR",sans-serif}
+.lv-busy{opacity:.6;pointer-events:none}
+.lv-loading{opacity:.55;transition:opacity .2s}
+.lv-clickable{cursor:pointer}
+.field-shell.lv-invalid{outline:2px solid #e5484d;outline-offset:1px;border-radius:12px}
+
+/* 품목 카드 그리드: 카드 수에 맞춰 2열 */
+.lv-card-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px!important;height:auto!important}
+.lv-card-grid>[data-name^="Card"]{width:auto!important;min-width:0!important}
+@media(max-width:640px){.lv-card-grid{grid-template-columns:1fr}}
+
+/* 추가한 품목 행 */
+[data-name="Item Rows List"]{height:auto!important;gap:0!important}
+.lv-row{display:flex;align-items:center;gap:20px;width:100%;padding:18px 16px;border-bottom:1px solid #e5e7e2;font-family:Pretendard,"Noto Sans KR",sans-serif;color:#012847}
+.lv-row:last-child{border-bottom:0}
+.lv-row-name{display:flex;align-items:center;gap:12px;flex:0 0 200px;min-width:0}
+.lv-row-name strong{display:block;font-size:15px;font-weight:700}
+.lv-row-name small{display:block;margin-top:2px;color:#8a6d00;font-size:11.5px}
+.lv-row-icon{flex:0 0 40px;height:40px;border:1px solid #e1e3de;border-radius:10px;background:#fff;display:grid;place-items:center}
+.lv-row-icon img{width:20px;height:20px}
+.lv-row-fields{display:flex;flex-wrap:wrap;gap:12px;flex:1 1 auto;min-width:0}
+.lv-field{display:flex;flex-direction:column;gap:6px;font-size:12px;color:#4b5563;font-weight:600}
+.lv-field b{color:#006c30}
+.lv-input{display:flex;align-items:center;height:40px;border:1px solid #cbcbcb;border-radius:10px;background:#fff;padding:0 10px;gap:6px}
+.lv-input:focus-within{outline:2px solid #006c30;outline-offset:-1px}
+.lv-input input,.lv-input select{border:0;outline:0;background:transparent;font:600 14px Pretendard,"Noto Sans KR",sans-serif;color:#012847;width:72px;min-width:0}
+.lv-input select{width:auto;max-width:150px;cursor:pointer}
+.lv-input input[data-key="unit_price"]{width:84px}
+.lv-input em{font-style:normal;color:#6b7280;font-size:12px;white-space:nowrap}
+.lv-row-side{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:0 0 auto}
+.lv-row-cost{margin:0;font-size:13px;font-weight:700;color:#006c30}
+.lv-chip{border:1px solid #cbcbcb;background:#fff;color:#012847;border-radius:999px;padding:6px 12px;font:600 12px Pretendard,"Noto Sans KR",sans-serif;cursor:pointer}
+.lv-chip[aria-pressed="true"]{background:#9edd9e;border-color:#6fc06f;color:#00451f}
+.lv-delete{border:0;background:transparent;color:#c2410c;font:600 12px Pretendard,"Noto Sans KR",sans-serif;cursor:pointer;padding:4px 2px;text-decoration:underline}
+.lv-delete:hover{color:#9a3412}
+@media(max-width:900px){.lv-row{flex-wrap:wrap}.lv-row-name{flex:1 1 100%}.lv-row-side{flex-direction:row;align-items:center;width:100%;justify-content:space-between}}
+
+/* 분석: 도넛·범례 */
+.lv-donut{width:190px;height:190px;border-radius:50%;display:grid;place-items:center}
+.lv-donut>div{width:118px;height:118px;border-radius:50%;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Pretendard,"Noto Sans KR",sans-serif;color:#006c30}
+.lv-donut strong{font-size:28px;font-weight:800;line-height:1.1}
+.lv-donut span{font-size:12px;color:#4b5563}
+.lv-legend{display:flex;align-items:center;gap:10px;width:100%;font:500 14px Pretendard,"Noto Sans KR",sans-serif;color:#012847}
+.lv-legend i{flex:0 0 10px;height:10px;border-radius:50%}
+.lv-legend span{flex:1 1 auto;min-width:0}
+.lv-legend b{font-weight:700}
+[data-name="Legend"]{gap:12px!important;height:auto!important}
+
+/* 추천: 로딩·안내, 적용 버튼 */
+.lv-message{display:flex;align-items:center;gap:10px;padding:28px 8px;border-top:1px solid #e5e7e2;color:#4b5563;font:500 15px Pretendard,"Noto Sans KR",sans-serif}
+.lv-spinner{width:18px;height:18px;border-radius:50%;border:3px solid #cfe9cf;border-top-color:#006c30;animation:lv-spin 1s linear infinite}
+@keyframes lv-spin{to{transform:rotate(360deg)}}
+.lv-retry{border:1px solid #006c30;background:#fff;color:#006c30;border-radius:10px;padding:6px 12px;font-weight:700;cursor:pointer}
+.lv-apply{justify-content:center;font:700 15px Pretendard,"Noto Sans KR",sans-serif;color:#fff;cursor:pointer;border:0}
+.lv-apply.lv-applied{background:#9edd9e!important;color:#00451f!important}
+.lv-apply:disabled{background:#e5e7e2!important;color:#6b7280!important;cursor:not-allowed}

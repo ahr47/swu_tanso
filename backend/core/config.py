@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     app_name: str = "탄소줄이슈 API"
     app_env: str = "local"
     serve_frontend: bool = True   # ../frontend 화면을 같은 서버에서 제공 (로컬 체험용)
-    cors_origins: str = "http://localhost:5173,http://localhost:3000"
+    cors_origins: str = "http://127.0.0.1:4173,http://localhost:4173,http://localhost:5173,http://localhost:3000"
 
     # 배출계수 버전 (클라이언트는 보내지 않음)
     current_factor_version: str = "v1.0-2026-10"

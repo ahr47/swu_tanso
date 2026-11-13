@@ -4,7 +4,7 @@
     [품목·계수] 백엔드3 calculator/catalogue_v02.json   → 연결 완료
     [계산]     백엔드3 calculator                       → 연결 완료
     [AI]       백엔드4 ai/recommender                   → 연결 완료 (AI_API_KEY 없으면 임시 규칙 추천)
-    [DB]       백엔드1 db/repositories                  → 교체 예정 (지금은 메모리 저장소)
+    [DB]       백엔드1 db/repositories                  → 연결 완료 (DATABASE_URL 이 비어 있으면 메모리 저장소)
 
 함수 이름과 반환 형태는 임시 구현 때와 같습니다. 배출량은 계산기의 Decimal 원값을 그대로 돌려주고,
 반올림은 서비스(round1/round2, HALF_UP)에서 합니다.
@@ -20,9 +20,16 @@ from typing import Any, Dict, List, Optional, Tuple
 from calculator import CalculationError, analyze_scenario, calculate_item
 from calculator.catalogue import catalogue_from_records
 from core.config import get_settings
+from db.connection import transaction as db_transaction
+from db.repositories import event_repository, item_repository
+
+
+def _use_db() -> bool:
+    """DATABASE_URL 이 입력됐으면 PostgreSQL, 아니면 메모리 저장소 (테스트·로컬 확인용)"""
+    return get_settings().database_url_is_set
 
 # ===========================================================================
-# 품목 마스터·배출계수 (백엔드3 catalogue_v02.json, 백엔드1 DB 연결 후 DB 조회로 교체)
+# 품목 마스터·배출계수 (DB: items·item_variants·emission_factors / DB 없으면 catalogue_v02.json)
 # ===========================================================================
 CAT_PRINT = "인쇄물·홍보물"
 CAT_DRINK = "음료·일회용품"
@@ -40,32 +47,58 @@ CATEGORY_CODES: Dict[str, str] = {
 }
 
 _CATALOGUE_PATH = Path(__file__).resolve().parents[1] / "calculator" / "catalogue_v02.json"
-_CATALOGUE = json.loads(_CATALOGUE_PATH.read_text(encoding="utf-8"))
 
-# API 응답용 품목 dict (v02 품목 목록 필드)
-ITEM_MASTER: List[Dict[str, Any]] = [
-    {
-        "item_id": row["item_id"], "item_name": row["item_name"], "category": row["category"],
-        "input_unit": row["input_unit"], "input_method": row["input_method"], "calc_type": row["calc_type"],
-        "variants": copy.deepcopy(row.get("variants")) or None, "notes": list(row.get("notes") or []),
-        "description": row.get("description"), "is_active": row.get("is_active", True),
-    }
-    for row in _CATALOGUE["items"]
-]
-ITEMS_BY_ID: Dict[str, Dict[str, Any]] = {item["item_id"]: item for item in ITEM_MASTER}
 
-# 계산기 객체 (ItemDefinition, EmissionFactor)
-_CALC_ITEMS, _CALC_FACTORS = catalogue_from_records(_CATALOGUE["items"], _CATALOGUE["factors"])
+class _Catalogue:
+    def __init__(self, item_records: List[Dict[str, Any]], factor_records: List[Dict[str, Any]]) -> None:
+        # API 응답용 품목 dict (v02 품목 목록 필드)
+        self.items: List[Dict[str, Any]] = [
+            {
+                "item_id": row["item_id"], "item_name": row["item_name"], "category": row["category"],
+                "input_unit": row["input_unit"], "input_method": row["input_method"], "calc_type": row["calc_type"],
+                "variants": copy.deepcopy(row.get("variants")) or None, "notes": list(row.get("notes") or []),
+                "description": row.get("description"), "is_active": row.get("is_active", True),
+            }
+            for row in item_records
+        ]
+        self.by_id: Dict[str, Dict[str, Any]] = {item["item_id"]: item for item in self.items}
+        # 계산기 객체 (ItemDefinition, EmissionFactor)
+        self.calc_items, self.calc_factors = catalogue_from_records(item_records, factor_records)
+
+
+_catalogue_cache: Optional[_Catalogue] = None
+_catalogue_lock = threading.Lock()
+
+
+def _catalogue() -> _Catalogue:
+    """품목·계수를 한 번 읽어 캐시. 계수를 DB 에서 바꿨으면 reload_catalogue() 호출"""
+    global _catalogue_cache
+    with _catalogue_lock:
+        if _catalogue_cache is None:
+            if _use_db():
+                item_records, factor_records = item_repository.fetch_catalogue()
+            else:
+                data = json.loads(_CATALOGUE_PATH.read_text(encoding="utf-8"))
+                item_records, factor_records = data["items"], data["factors"]
+            _catalogue_cache = _Catalogue(item_records, factor_records)
+        return _catalogue_cache
+
+
+def reload_catalogue() -> None:
+    global _catalogue_cache
+    with _catalogue_lock:
+        _catalogue_cache = None
 
 
 def list_active_items(category: Optional[str] = None) -> List[Dict[str, Any]]:
     if category:
         category = CATEGORY_CODES.get(category, category)
-    return [copy.deepcopy(i) for i in ITEM_MASTER if i["is_active"] and (not category or i["category"] == category)]
+    return [copy.deepcopy(i) for i in _catalogue().items
+            if i["is_active"] and (not category or i["category"] == category)]
 
 
 def get_item(item_id: str) -> Optional[Dict[str, Any]]:
-    item = ITEMS_BY_ID.get(item_id)
+    item = _catalogue().by_id.get(item_id)
     return item if item and item["is_active"] else None
 
 
@@ -84,7 +117,7 @@ def default_variant(item: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 
 
 # ===========================================================================
-# DB (백엔드1 교체 예정) — 지금은 메모리 저장소
+# DB (백엔드1 db/repositories 연결) — DATABASE_URL 이 비어 있으면 아래 메모리 저장소 사용
 # ===========================================================================
 class _MemoryStore:
     def __init__(self) -> None:
@@ -112,19 +145,29 @@ class _MemoryStore:
 _store = _MemoryStore()
 
 
-def transaction() -> threading.RLock:
-    """with transaction(): 블록 = DB 트랜잭션 자리. 백엔드1 connection.py 의 트랜잭션 함수로 교체."""
+def transaction() -> Any:
+    """with transaction(): 블록 = 한 DB 트랜잭션 (블록 안의 어댑터 함수는 같은 연결 사용)"""
+    if _use_db():
+        return db_transaction()
     return _store.lock
 
 
 def reset_store() -> None:
-    """테스트용: 저장소 초기화"""
+    """테스트용: 저장소 초기화 (DB 면 행사·시나리오·추천 삭제. 운영 환경에서는 금지)"""
     global _store
+    if _use_db():
+        if get_settings().app_env == "production":
+            raise RuntimeError("운영 DB 에서는 reset_store 를 쓸 수 없습니다")
+        event_repository.reset_all()
+        reload_catalogue()
+        return
     _store = _MemoryStore()
 
 
 def create_event(data: Dict[str, Any]) -> Tuple[str, str]:
     """행사 + original 시나리오를 함께 만들고 (event_id, scenario_id) 반환"""
+    if _use_db():
+        return event_repository.create_event(data)
     with _store.lock:
         event_id = _store.next_event_id()
         scenario_id = _store.next_scenario_id()
@@ -137,16 +180,22 @@ def create_event(data: Dict[str, Any]) -> Tuple[str, str]:
 
 
 def get_event(event_id: str) -> Optional[Dict[str, Any]]:
+    if _use_db():
+        return event_repository.get_event(event_id)
     event = _store.events.get(event_id)
     return copy.deepcopy(event) if event else None
 
 
 def get_scenario(scenario_id: str) -> Optional[Dict[str, Any]]:
+    if _use_db():
+        return event_repository.get_scenario(scenario_id)
     scenario = _store.scenarios.get(scenario_id)
     return copy.deepcopy(scenario) if scenario else None
 
 
 def find_scenario(event_id: str, scenario_type: str) -> Optional[Dict[str, Any]]:
+    if _use_db():
+        return event_repository.find_scenario(event_id, scenario_type)
     for scenario in _store.scenarios.values():
         if scenario["event_id"] == event_id and scenario["scenario_type"] == scenario_type:
             return copy.deepcopy(scenario)
@@ -162,6 +211,8 @@ def _delete_improved_and_recs(event_id: str) -> None:
 
 def replace_scenario_items(scenario_id: str, items: List[Dict[str, Any]]) -> int:
     """original 품목 통째로 교체 + 기존 추천·improved 삭제. 새 version 반환"""
+    if _use_db():
+        return event_repository.replace_scenario_items(scenario_id, items)
     with _store.lock:
         scenario = _store.scenarios[scenario_id]
         scenario["items"] = copy.deepcopy(items)
@@ -173,6 +224,8 @@ def replace_scenario_items(scenario_id: str, items: List[Dict[str, Any]]) -> int
 def replace_recommendations(event_id: str, scenario_id: str, recs: List[Dict[str, Any]],
                             base_version: int) -> List[Dict[str, Any]]:
     """이전 추천·improved 삭제 후 새 추천 저장. rec_id 를 붙여서 반환. 호출 전에 transaction() 안에서 버전 확인"""
+    if _use_db():
+        return event_repository.replace_recommendations(event_id, scenario_id, recs, base_version)
     with _store.lock:
         _delete_improved_and_recs(event_id)
         saved = []
@@ -186,11 +239,15 @@ def replace_recommendations(event_id: str, scenario_id: str, recs: List[Dict[str
 
 
 def get_recommendations(rec_ids: List[str]) -> Dict[str, Dict[str, Any]]:
+    if _use_db():
+        return event_repository.get_recommendations(rec_ids)
     return {rid: copy.deepcopy(_store.recommendations[rid]) for rid in rec_ids if rid in _store.recommendations}
 
 
 def save_improved_scenario(event_id: str, items: List[Dict[str, Any]]) -> str:
     """improved 시나리오를 덮어쓰고 scenario_id 반환 (행사당 1개)"""
+    if _use_db():
+        return event_repository.save_improved_scenario(event_id, items)
     with _store.lock:
         existing = find_scenario(event_id, "improved")
         scenario_id = existing["scenario_id"] if existing else _store.next_scenario_id()
@@ -218,7 +275,7 @@ def _factor_version() -> str:
 
 
 def _to_calc_input(row: Dict[str, Any]) -> Dict[str, Any]:
-    item = ITEMS_BY_ID.get(row["item_id"])
+    item = _catalogue().by_id.get(row["item_id"])
     if item is None:
         raise ValueError(f"등록된 품목이 아닙니다: {row['item_id']}")
     data: Dict[str, Any] = {"item_id": row["item_id"]}
@@ -244,15 +301,18 @@ def calc_item(row: Dict[str, Any]) -> Dict[str, Any]:
     """품목 1줄 계산. row: item_id, quantity, variant, width_m, height_m, unit_price.
     계수 없음 등 계산 불가면 ValueError (CalculationError 는 ValueError 하위 클래스)."""
     data = _to_calc_input(row)
-    item = _CALC_ITEMS.get(data["item_id"])
-    calc = calculate_item(data, item=item, factors=_CALC_FACTORS, factor_version=_factor_version())
+    catalogue = _catalogue()
+    calc = calculate_item(data, item=catalogue.calc_items.get(data["item_id"]), factors=catalogue.calc_factors,
+                          factor_version=_factor_version())
     return _item_result(calc)
 
 
 def analyze_items(rows: List[Dict[str, Any]], participants: int, budget: Optional[int]) -> Dict[str, Any]:
     """행사 전체 분석. 배출량은 Decimal 원값, 비율은 계산기가 확정한 값(소수 첫째 자리)."""
     try:
-        analysis = analyze_scenario([_to_calc_input(r) for r in rows], items=_CALC_ITEMS, factors=_CALC_FACTORS,
+        catalogue = _catalogue()
+        analysis = analyze_scenario([_to_calc_input(r) for r in rows], items=catalogue.calc_items,
+                                    factors=catalogue.calc_factors,
                                     factor_version=_factor_version(), participants=participants,
                                     scenario_id="adapter", budget=budget)
     except CalculationError as exc:
@@ -355,7 +415,7 @@ def _rule_based_recommendations(ai_input: Dict[str, Any]) -> Dict[str, Any]:
             recs.append({
                 "item_id": item["item_id"], "action_type": "replace_item", "target_field": "item_id",
                 "recommended_value": None, "alternative_item_id": alt_id, "alternative_variant": alt_variant,
-                "title": f"{item['item_name']} → {ITEMS_BY_ID[alt_id]['item_name']}", "difficulty": "쉬움", "reason": reason,
+                "title": f"{item['item_name']} → {_catalogue().by_id[alt_id]['item_name']}", "difficulty": "쉬움", "reason": reason,
             })
         elif item["quantity"] and item["quantity"] >= 2:
             new_quantity = int(item["quantity"] * 0.6)

@@ -21,7 +21,7 @@ uvicorn main:app --reload
 
 | 항목 | 받을 곳 | 비고 |
 | --- | --- | --- |
-| `DATABASE_URL` | 백엔드1 | 지금은 `여기에_DB_연결_주소_입력` 그대로 둬도 메모리 저장소로 동작 |
+| `DATABASE_URL` | 백엔드1 | 비워 두면(`여기에_DB_연결_주소_입력`) 메모리 저장소로 동작. 아래 "DB" 참고 |
 | `AI_API_KEY` | 백엔드4 | 지금은 `여기에_AI_API_키_입력` 그대로 둬도 임시 규칙 기반 추천으로 동작 |
 
 `.env` 는 깃허브에 올리지 않습니다 (`.gitignore` 에 포함).
@@ -45,10 +45,38 @@ uvicorn main:app --reload
 
 | 구역 | 지금 | 비고 |
 | --- | --- | --- |
-| 품목 마스터·계수 | 백엔드3 `calculator/catalogue_v02.json` | 백엔드1 DB 연결 후 DB 조회로 교체 |
+| 품목 마스터·계수 | DB `items`·`item_variants`·`emission_factors` | DB 없으면 `calculator/catalogue_v02.json` |
 | 계산 | 백엔드3 `calculator` (`analyze_scenario`, `calculate_item`) | 연결 완료 |
 | AI | 백엔드4 `ai/recommender` (OpenAI `gpt-6.1-sol`) | 연결 완료. `AI_API_KEY` 가 비어 있으면 임시 규칙 기반 추천 |
-| DB | 메모리 저장소 (서버를 끄면 사라짐) | 백엔드1 `db/repositories` 로 교체 예정 |
+| DB | 백엔드1 `db/repositories` (PostgreSQL) | 연결 완료. `DATABASE_URL` 이 비어 있으면 메모리 저장소 |
 
 - 재시도는 백엔드4 모듈이 1회 직접 합니다. 실제 AI 를 쓸 때 서비스는 한 번만 부르고 `AI_TIMEOUT_SECONDS × 2 + 5`초까지 기다립니다 (`adapters.ai_call_policy`).
 - 배출량은 계산기의 Decimal 원값을 받아 서비스에서 HALF_UP 으로 반올림합니다.
+
+## DB
+
+PostgreSQL 14 이상 (또는 개발용 PGlite). `.env` 에 `DATABASE_URL` 을 넣고 서버를 켜면,
+테이블이 없을 때 `db/sql/schema.sql` + `seed.sql` 을 자동으로 실행합니다 (`DB_AUTO_INIT=true`).
+
+```bash
+# PostgreSQL 이 없으면 PGlite (Node.js 20+, 동시 연결 1개라 DB_POOL_MAX=1)
+npx -y -p @electric-sql/pglite-socket pglite-server --db=./pgdata --port=5432
+# .env: DATABASE_URL=postgresql://postgres@127.0.0.1:5432/postgres?sslmode=disable
+
+python -m db            # 수동 초기화 (테이블이 없을 때만)
+python -m db --reset    # 모두 지우고 다시 생성 — 데이터가 사라집니다
+```
+
+| 테이블 | 내용 |
+| --- | --- |
+| `items`, `item_variants`, `emission_factors` | 품목 마스터·변형·버전별 배출계수 (출처 포함) |
+| `events` | 행사 (`EVT_0001`) |
+| `scenarios`, `scenario_items` | 행사별 original / improved 시나리오와 품목 (`SCN_0001`), `version` 으로 추천 유효성 확인 |
+| `recommendations` | 추천 (`REC_1`), 생성 시점 `base_version` 저장 |
+
+- **계수 데이터의 원본은 백엔드3의 `calculator/catalogue_v02.json`** 입니다. 바뀌면
+  `python -m db.seed_from_catalogue` 로 `seed.sql` 을 다시 만들고 함께 커밋하세요.
+  이미 만든 DB 에 반영하려면 `python -m db --reset` (행사 데이터도 지워짐) 또는 계수 테이블만 갱신합니다.
+- 품목·계수는 서버가 처음 쓸 때 읽어 캐시합니다. DB 에서 직접 계수를 바꿨다면 서버를 재시작하세요.
+- 테스트를 실제 DB 로 돌리려면 **비어 있어도 되는 테스트 전용 DB** 를 지정합니다 (시작 시 초기화됨):
+  `TEST_DATABASE_URL=postgresql://... pytest -q`

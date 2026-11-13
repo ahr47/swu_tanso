@@ -22,8 +22,11 @@ class Settings(BaseSettings):
     # 배출계수 버전 (클라이언트는 보내지 않음)
     current_factor_version: str = "v1.0-2026-10"
 
-    # DB (백엔드1)
+    # DB (백엔드1). 자리 표시 텍스트 그대로면 메모리 저장소로 동작
     database_url: str = "여기에_DB_연결_주소_입력"
+    db_pool_min: int = 1
+    db_pool_max: int = 5          # PGlite 소켓 서버는 동시 연결 1개 -> 1
+    db_auto_init: bool = True     # 테이블이 없으면 서버 시작 시 schema.sql + seed.sql 실행
 
     # AI (백엔드4)
     ai_api_key: str = "여기에_AI_API_키_입력"  # OpenAI API 키

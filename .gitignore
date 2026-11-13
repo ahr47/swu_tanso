@@ -16,3 +16,5 @@ build/
 
 # PGlite 로컬 DB 데이터
 pgdata/
+pgdata.log
+.pglite/

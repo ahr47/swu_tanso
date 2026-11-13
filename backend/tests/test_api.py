@@ -82,7 +82,7 @@ def test_full_flow_example():
     assert analysis["priced_item_count"] == 4
     assert analysis["budget_usage_rate"] == 97.6
     eco_bag = next(i for i in analysis["by_item"] if i["item_id"] == "eco_bag")
-    assert eco_bag["emission"] == pytest.approx(50 * 0.9447, abs=0.01)
+    assert eco_bag["emission"] == pytest.approx(50 * 1.833, abs=0.01)  # 계산기 catalogue_v02 계수
     assert len(analysis["top_items"]) == 3
 
     # 추천

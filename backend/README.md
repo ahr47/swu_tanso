@@ -39,14 +39,16 @@ uvicorn main:app --reload
 2. 파트 사이 데이터 형식을 바꿀 때는 백엔드2와 먼저 합의합니다.
 3. API 를 구현할 때마다 `/docs` 와 필드명세서가 맞는지 확인합니다.
 
-## 임시 어댑터 (`services/adapters.py`)
+## 어댑터 (`services/adapters.py`)
 
-DB·계산·AI 코드가 올라오기 전까지 서버가 동작하도록 만든 임시 구현입니다.
-`services/*.py` 는 이 파일의 함수만 부르므로, 각 파트 코드가 준비되면 이 파일 안의 해당 구역만 교체합니다.
+`services/*.py` 는 이 파일의 함수만 부릅니다. 파트 코드가 준비될 때마다 이 파일 안의 해당 구역만 교체합니다.
 
-| 구역 | 지금 | 교체할 코드 |
+| 구역 | 지금 | 비고 |
 | --- | --- | --- |
-| 품목 마스터·계수 | 파일 안의 `ITEM_MASTER` | 백엔드1 `item_repository` + 백엔드3 계수 테이블 |
-| DB | 메모리 저장소 (서버를 끄면 사라짐) | 백엔드1 `db/repositories` |
-| 계산 | `calc_item`, `analyze_items` | 백엔드3 `calculator` |
-| AI | `call_ai` (규칙 기반) | 백엔드4 `ai/recommender` |
+| 품목 마스터·계수 | 백엔드3 `calculator/catalogue_v02.json` | 백엔드1 DB 연결 후 DB 조회로 교체 |
+| 계산 | 백엔드3 `calculator` (`analyze_scenario`, `calculate_item`) | 연결 완료 |
+| AI | 백엔드4 `ai/recommender` (OpenAI `gpt-6.1-sol`) | 연결 완료. `AI_API_KEY` 가 비어 있으면 임시 규칙 기반 추천 |
+| DB | 메모리 저장소 (서버를 끄면 사라짐) | 백엔드1 `db/repositories` 로 교체 예정 |
+
+- 재시도는 백엔드4 모듈이 1회 직접 합니다. 실제 AI 를 쓸 때 서비스는 한 번만 부르고 `AI_TIMEOUT_SECONDS × 2 + 5`초까지 기다립니다 (`adapters.ai_call_policy`).
+- 배출량은 계산기의 Decimal 원값을 받아 서비스에서 HALF_UP 으로 반올림합니다.

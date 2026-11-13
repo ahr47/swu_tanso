@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name
 app = FastAPI(
     title=settings.app_name,
     version="0.2.0",
-    description="API 필드명세서 v02 기준. 현재 DB·계산·AI 는 services/adapters.py 의 임시 구현으로 동작합니다.",
+    description="API 필드명세서 v02 기준. 계산(백엔드3)·AI(백엔드4) 연결 완료, DB 는 services/adapters.py 의 메모리 저장소로 동작합니다.",
 )
 
 app.add_middleware(

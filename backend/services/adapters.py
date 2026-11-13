@@ -1,26 +1,28 @@
 """
-⚠️ 임시 어댑터 (백엔드2 작성) — 다른 파트 코드가 올라오면 이 파일만 바꿉니다.
+어댑터 (백엔드2) — services/*.py 는 DB·계산·AI 를 직접 부르지 않고 이 파일의 함수만 부릅니다.
 
-services/*.py 는 DB·계산·AI 를 직접 부르지 않고 이 파일의 함수만 부릅니다.
-그래서 다른 파트 코드가 준비되면 이 파일 안의 함수 내용만 교체하면 됩니다.
+    [품목·계수] 백엔드3 calculator/catalogue_v02.json   → 연결 완료
+    [계산]     백엔드3 calculator                       → 연결 완료
+    [AI]       백엔드4 ai/recommender                   → 연결 완료 (AI_API_KEY 없으면 임시 규칙 추천)
+    [DB]       백엔드1 db/repositories                  → 교체 예정 (지금은 메모리 저장소)
 
-    [DB]   백엔드1 db/repositories      → "DB (백엔드1 교체 예정)" 구역
-    [계산] 백엔드3 calculator            → "계산 (백엔드3 교체 예정)" 구역
-    [AI]   백엔드4 ai/recommender       → "AI (백엔드4 교체 예정)" 구역
-
-지금은
-- DB 대신 메모리 저장소를 씁니다 (서버를 끄면 데이터가 사라집니다).
-- 계수는 품목·입력값 명세서 6장 + 필드명세서 v02 품목표 값을 씁니다.
-- AI 대신 규칙 기반 임시 추천을 씁니다. AI_API_KEY 가 입력돼도 백엔드4 코드 연결 전까지는 동일합니다.
+함수 이름과 반환 형태는 임시 구현 때와 같습니다. 배출량은 계산기의 Decimal 원값을 그대로 돌려주고,
+반올림은 서비스(round1/round2, HALF_UP)에서 합니다.
 """
+import asyncio
 import copy
+import json
 import threading
+from decimal import Decimal
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from calculator import CalculationError, analyze_scenario, calculate_item
+from calculator.catalogue import catalogue_from_records
 from core.config import get_settings
 
 # ===========================================================================
-# 품목 마스터·배출계수 (백엔드1 seed.sql + 백엔드3 계수 테이블로 교체 예정)
+# 품목 마스터·배출계수 (백엔드3 catalogue_v02.json, 백엔드1 DB 연결 후 DB 조회로 교체)
 # ===========================================================================
 CAT_PRINT = "인쇄물·홍보물"
 CAT_DRINK = "음료·일회용품"
@@ -37,92 +39,23 @@ CATEGORY_CODES: Dict[str, str] = {
     "delivery_pack": CAT_DELIVERY,
 }
 
-_ECOSQUARE = ("ECOSQUARE (국내 통합 DB)",
-              "https://ecosq.or.kr/websquare.do#w2xPath=/ui/cer/ic/oh/ICOH110M01.xml&valVl=tabs3&menuSn=20018500")
-_KEITI = ("한국환경산업기술원 탄소발자국 인증", "https://www.data.go.kr/data/15089157/fileData.do?recommendDataYn=Y")
-_ADEME = ("ADEME AGRIBALYSE 3.2", None)
-_BIG_CLIMATE = ("The Big Climate Database v1.2", None)
+_CATALOGUE_PATH = Path(__file__).resolve().parents[1] / "calculator" / "catalogue_v02.json"
+_CATALOGUE = json.loads(_CATALOGUE_PATH.read_text(encoding="utf-8"))
 
-
-def _v(code: str, label: str, factor: float, default: bool = False, notes: Optional[List[str]] = None) -> Dict[str, Any]:
-    return {"variant": code, "label": label, "factor": factor, "is_default": default, "notes": notes or []}
-
-
-def _item(item_id: str, name: str, category: str, unit: str, *, input_method: str = "count_only",
-          calc_type: str = "COUNT", factor: Optional[float] = None, variants: Optional[List[Dict[str, Any]]] = None,
-          source: Tuple[str, Optional[str]] = ("팀 조사값", None), year: Optional[int] = None,
-          confidence: Optional[str] = None, notes: Optional[List[str]] = None, scope: str = "제품 전과정",
-          description: Optional[str] = None) -> Dict[str, Any]:
-    return {
-        "item_id": item_id, "item_name": name, "category": category, "input_unit": unit,
-        "input_method": input_method, "calc_type": calc_type, "factor": factor, "variants": variants,
-        "source_name": source[0], "source_url": source[1], "source_year": year,
-        "confidence": confidence, "notes": notes or [], "scope": scope,
-        "description": description, "is_active": True,
-    }
-
-
-# 계수 단위: COUNT 는 kgCO₂e/input_unit, AREA 는 kgCO₂e/㎡
-# ⚠️ 표시 값은 백엔드3 확정 전 값입니다.
+# API 응답용 품목 dict (v02 품목 목록 필드)
 ITEM_MASTER: List[Dict[str, Any]] = [
-    # --- 인쇄물·홍보물 ---
-    _item("a4_paper", "A4 용지", CAT_PRINT, "장", factor=0.0056, source=_ECOSQUARE,
-          description="실제 사용한 종이 장수를 입력하세요"),
-    _item("leaflet", "리플릿", CAT_PRINT, "장", input_method="count_variant", source=_ECOSQUARE, notes=["잠정값"],
-          variants=[_v("a5", "A5", 0.006316), _v("a4", "A4", 0.012631, True), _v("a3", "A3", 0.025262)]),  # ⚠️
-    _item("poster", "포스터", CAT_PRINT, "장", input_method="count_variant", source=_ECOSQUARE, notes=["잠정값"],
-          variants=[_v("a4", "A4", 0.012631), _v("a3", "A3", 0.025262, True), _v("a2", "A2", 0.050523)]),  # ⚠️
-    _item("banner", "현수막", CAT_PRINT, "개", input_method="dimension", calc_type="AREA", factor=0.9511,
-          confidence="D", notes=["참고값"], scope="확인 필요", description="가로·세로는 m 단위로 입력하세요"),
-    _item("name_tag", "종이 명찰·프로그램북", CAT_PRINT, "부", factor=0.000946, source=_ECOSQUARE,
-          notes=["잠정값"]),  # ⚠️ 명찰 1개 기준
-    # --- 음료·일회용품 ---
-    _item("water", "생수", CAT_DRINK, "병", input_method="count_variant", source=_KEITI,
-          variants=[_v("330ml", "330mL", 0.0769), _v("500ml", "500mL", 0.0793, True),
-                    _v("1l", "1L", 0.1658, notes=["대표 제품 값 기준"]),
-                    _v("1.5l", "1.5L", 0.1551, notes=["대표 제품 값 기준"]), _v("2l", "2L", 0.2258)]),
-    _item("can_drink", "캔 음료", CAT_DRINK, "개", input_method="count_variant", source=_KEITI,
-          notes=["대표 제품 값 기준"], variants=[_v("210ml", "210mL", 0.0851), _v("250ml", "250mL", 0.0936, True)]),
-    _item("pet_drink", "페트 음료", CAT_DRINK, "개", input_method="count_variant", source=_KEITI,
-          notes=["대표 제품 값 기준"], variants=[_v("500ml", "500mL", 0.1798, True), _v("1.5l", "1.5L", 0.3955)]),
-    _item("paper_cup", "종이컵(+PP 뚜껑)", CAT_DRINK, "개", factor=0.0428, source=("학술자료", None)),
-    _item("pet_cup", "PET컵(+PET 뚜껑)", CAT_DRINK, "개", factor=0.0778,
-          source=("학술자료", "https://www.e-lca.org/archive/view_article_pubreader?pid=kjlca-27-2-99")),
-    _item("cutlery_set", "일회용 수저 세트", CAT_DRINK, "세트", factor=0.110,
-          source=("한국기후환경네트워크 탄소발자국 계산기", "https://www.gihoo.or.kr/menu.es?mid=a11302000000")),
-    _item("hygiene_gloves", "위생장갑", CAT_DRINK, "매", input_method="count_variant", source=_KEITI,
-          variants=[_v("pack_400", "400매입", 0.012437, True), _v("pack_150", "150매입", 0.012962)]),
-    _item("wrap_film", "포장랩", CAT_DRINK, "롤", factor=4.2327, source=_KEITI,
-          description="25cm × 250m 1롤 기준"),
-    # --- 음식·간식 ---
-    _item("sandwich", "샌드위치", CAT_FOOD, "개", factor=0.560, source=_ADEME, notes=["잠정값"], scope="원료~제조"),
-    _item("pizza", "피자", CAT_FOOD, "조각", factor=0.190, source=_ADEME, notes=["잠정값"], scope="원료~제조"),
-    _item("snack", "봉지과자", CAT_FOOD, "봉지", input_method="count_variant", source=_ADEME, notes=["잠정값"],
-          scope="원료~제조", variants=[_v("regular", "일반", 0.152, True), _v("small", "소형", 0.092)]),
-    _item("choco_bar", "초콜릿바", CAT_FOOD, "개", factor=0.363, source=_ADEME, notes=["잠정값"], scope="원료~제조"),
-    _item("jelly", "젤리", CAT_FOOD, "봉지", factor=0.084, source=_BIG_CLIMATE, notes=["잠정값"], scope="원료~제조"),
-    _item("cup_noodle", "컵라면", CAT_FOOD, "개", input_method="count_variant", source=_BIG_CLIMATE,
-          notes=["잠정값"], scope="제조공정", variants=[_v("large", "큰컵", 0.232, True), _v("small", "작은컵", 0.137)]),
-    # --- 굿즈 ---
-    _item("eco_bag", "에코백", CAT_GOODS, "개", factor=0.9447, year=2026, notes=["잠정값"],
-          source=("영국 환경청 LCA 데이터 정리 자료", "https://edu.rsc.org/download?ac=531823")),  # ⚠️ 67g 기준
-    _item("tshirt", "티셔츠", CAT_GOODS, "벌", factor=6.5, notes=["참고값"],
-          source=("Arbor", "https://www.arbor.eco/carbon-footprint/t-shirt")),
-    _item("tumbler", "텀블러", CAT_GOODS, "개", input_method="count_variant",
-          source=("24Bottles 자사 LCA 데이터 인용 자료",
-                  "https://green-alliance.org.uk/wp-content/uploads/2021/11/losing_the_bottle_methodology.pdf"),
-          variants=[_v("basic", "일반", 0.543, True), _v("insulated", "보온", 1.137)]),
-    _item("ballpoint_pen", "볼펜", CAT_GOODS, "개", factor=0.005, notes=["참고값"],
-          source=("Fountain Pen Revolution 블로그", None)),
-    _item("acrylic_keyring", "아크릴 키링", CAT_GOODS, "개", factor=0.045339, year=2018, notes=["잠정값"],
-          source=("미국 EPA LCA 보고서",
-                  "https://www.epa.gov/sites/default/files/2018-02/documents/lca_mfd_printer.pdf")),  # ⚠️ 8.925g 기준
-    # --- 배송 ---
-    _item("delivery", "일반 배송", CAT_DELIVERY, "회", input_method="fixed_use", factor=0.33, year=2018,
-          confidence="D", notes=["대표값 기준"], scope="운행만", source=("UK DEFRA 온실가스 환산계수 2018", None)),
+    {
+        "item_id": row["item_id"], "item_name": row["item_name"], "category": row["category"],
+        "input_unit": row["input_unit"], "input_method": row["input_method"], "calc_type": row["calc_type"],
+        "variants": copy.deepcopy(row.get("variants")) or None, "notes": list(row.get("notes") or []),
+        "description": row.get("description"), "is_active": row.get("is_active", True),
+    }
+    for row in _CATALOGUE["items"]
 ]
-
 ITEMS_BY_ID: Dict[str, Dict[str, Any]] = {item["item_id"]: item for item in ITEM_MASTER}
+
+# 계산기 객체 (ItemDefinition, EmissionFactor)
+_CALC_ITEMS, _CALC_FACTORS = catalogue_from_records(_CATALOGUE["items"], _CATALOGUE["factors"])
 
 
 def list_active_items(category: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -269,94 +202,146 @@ def save_improved_scenario(event_id: str, items: List[Dict[str, Any]]) -> str:
 
 
 # ===========================================================================
-# 계산 (백엔드3 교체 예정) — calculator/emissions.py, analysis.py 자리
+# 계산 (백엔드3 calculator 연결)
 # ===========================================================================
-def calc_item(row: Dict[str, Any]) -> Dict[str, Any]:
-    """품목 1줄 계산. row: item_id, quantity, variant, width_m, height_m, unit_price"""
+# 계산기는 품목 유형별로 받는 필드가 정해져 있어서, 저장된 줄에서 해당 필드만 골라 넘깁니다.
+_CALC_FIELDS = {
+    "count_only": ("quantity", "unit_price"),
+    "count_variant": ("quantity", "variant", "unit_price"),
+    "dimension": ("quantity", "width_m", "height_m", "unit_price"),
+    "fixed_use": (),  # 일반 배송: 수량 1 고정, 계산기가 처리
+}
+
+
+def _factor_version() -> str:
+    return get_settings().current_factor_version
+
+
+def _to_calc_input(row: Dict[str, Any]) -> Dict[str, Any]:
     item = ITEMS_BY_ID.get(row["item_id"])
     if item is None:
-        raise ValueError(f"계수를 찾을 수 없음: {row['item_id']}")
-    variant = get_variant(item, row.get("variant")) if item.get("variants") else None
-    factor = variant["factor"] if variant else item["factor"]
-    if factor is None:
-        raise ValueError(f"계수를 찾을 수 없음: {row['item_id']} / {row.get('variant')}")
+        raise ValueError(f"등록된 품목이 아닙니다: {row['item_id']}")
+    data: Dict[str, Any] = {"item_id": row["item_id"]}
+    for name in _CALC_FIELDS[item["input_method"]]:
+        if row.get(name) is not None:
+            data[name] = row[name]
+    return data
 
-    quantity = row.get("quantity") or 0
-    if item["calc_type"] == "AREA":
-        emission = row["width_m"] * row["height_m"] * quantity * factor
-    else:
-        emission = quantity * factor
 
-    unit_price = row.get("unit_price")
-    cost = int(round(unit_price * quantity)) if unit_price is not None else None
-    notes = list(item["notes"]) + (variant["notes"] if variant else [])
+def _item_result(calc: Any) -> Dict[str, Any]:
+    """ItemCalculation -> 서비스가 쓰는 dict (emission 은 Decimal 원값)"""
     return {
-        "item_id": item["item_id"], "item_name": item["item_name"], "category": item["category"],
-        "variant_label": variant["label"] if variant else None, "quantity": quantity, "unit": item["input_unit"],
-        "emission": emission, "cost": cost, "confidence": item["confidence"], "notes": notes,
-        "source": {"name": item["source_name"], "year": item["source_year"], "url": item["source_url"]},
-        "scope": item["scope"],
+        "item_id": calc.item_id, "item_name": calc.item_name, "category": calc.category,
+        "variant_label": calc.variant_label, "quantity": int(calc.quantity), "unit": calc.unit,
+        "emission": calc.emission, "cost": calc.cost, "confidence": calc.confidence,
+        "notes": list(calc.notes),
+        "source": {"name": calc.source_name, "year": calc.source_year, "url": calc.source_url},
+        "scope": calc.scope_group,
     }
+
+
+def calc_item(row: Dict[str, Any]) -> Dict[str, Any]:
+    """품목 1줄 계산. row: item_id, quantity, variant, width_m, height_m, unit_price.
+    계수 없음 등 계산 불가면 ValueError (CalculationError 는 ValueError 하위 클래스)."""
+    data = _to_calc_input(row)
+    item = _CALC_ITEMS.get(data["item_id"])
+    calc = calculate_item(data, item=item, factors=_CALC_FACTORS, factor_version=_factor_version())
+    return _item_result(calc)
 
 
 def analyze_items(rows: List[Dict[str, Any]], participants: int, budget: Optional[int]) -> Dict[str, Any]:
-    """행사 전체 분석. 반올림 전 값으로 돌려주고, 반올림은 서비스에서 합니다."""
-    results = sorted((calc_item(r) for r in rows), key=lambda r: r["emission"], reverse=True)
-    total = sum(r["emission"] for r in results)
-    for r in results:
-        r["ratio"] = (r["emission"] / total * 100) if total > 0 else None
+    """행사 전체 분석. 배출량은 Decimal 원값, 비율은 계산기가 확정한 값(소수 첫째 자리)."""
+    try:
+        analysis = analyze_scenario([_to_calc_input(r) for r in rows], items=_CALC_ITEMS, factors=_CALC_FACTORS,
+                                    factor_version=_factor_version(), participants=participants,
+                                    scenario_id="adapter", budget=budget)
+    except CalculationError as exc:
+        raise ValueError(exc.message) from exc
+    api = analysis.to_api_response()  # 정렬·비율·상위 3개·경고는 계산기 기준
+    total = analysis.total_emission
+    calc_by_id = {c.item_id: c for c in analysis.results}
 
-    categories: Dict[str, float] = {}
-    for r in results:
-        categories[r["category"]] = categories.get(r["category"], 0.0) + r["emission"]
+    by_item = []
+    for row in api["by_item"]:
+        result = _item_result(calc_by_id[row["item_id"]])
+        result["ratio"] = row["ratio"]
+        by_item.append(result)
+
+    category_totals: Dict[str, Decimal] = {}
+    for calc in analysis.results:
+        category_totals[calc.category] = category_totals.get(calc.category, Decimal(0)) + calc.emission
     by_category = [
-        {"category": c, "emission": e, "ratio": (e / total * 100) if total > 0 else None}
-        for c, e in sorted(categories.items(), key=lambda kv: kv[1], reverse=True)
+        {"category": row["category"], "emission": category_totals[row["category"]], "ratio": row["ratio"]}
+        for row in api["by_category"]
     ]
-
-    priced = [r for r in results if r["cost"] is not None]
-    total_cost = sum(r["cost"] for r in priced) if priced else None
-    top = results[:3]
-    warnings = []
-    # TODO(백엔드3): "계산 범위가 다른 자료를 포함함" 표시 조건 확정 후 교체. 지금은 계산 범위가 2종류 이상이면 표시
-    if len({r["scope"] for r in results}) > 1:
-        warnings.append("계산 범위가 다른 자료를 포함함")
 
     return {
         "total_emission": total,
-        "emission_per_person": total / participants if participants else 0.0,
-        "total_cost": total_cost,
-        "priced_item_count": len(priced),
-        "budget_usage_rate": (total_cost / budget * 100) if (total_cost is not None and budget) else None,
-        "by_item": results,
+        "emission_per_person": total / participants if participants else Decimal(0),
+        "total_cost": analysis.total_cost,
+        "priced_item_count": analysis.priced_item_count,
+        "budget_usage_rate": api["budget_usage_rate"],
+        "by_item": by_item,
         "by_category": by_category,
-        "top_items": [r["item_id"] for r in top],
-        "top_items_share": (sum(r["emission"] for r in top) / total * 100) if total > 0 else None,
-        "warnings": warnings,
+        "top_items": api["top_items"],
+        "top_items_share": api["top_items_share"],
+        "warnings": api["warnings"],
     }
 
 
 # ===========================================================================
-# AI (백엔드4 교체 예정) — ai/recommender.py 자리
+# AI (백엔드4 ai/recommender 연결)
 # ===========================================================================
-# 품목 교체 후보 (임시 규칙)
-_REPLACEMENTS: Dict[str, Tuple[str, str, str]] = {
+def ai_is_connected() -> bool:
+    """AI_API_KEY 가 입력됐으면 실제 AI(백엔드4) 호출, 아니면 임시 규칙 기반 추천"""
+    return get_settings().ai_api_key_is_set
+
+
+def ai_call_policy() -> Tuple[int, float]:
+    """(호출 횟수, 1회 대기 시간 초). 실제 AI 는 백엔드4 모듈이 1회 재시도를 직접 하므로 서비스는 1번만 부른다."""
+    settings = get_settings()
+    if ai_is_connected():
+        return 1, settings.ai_timeout_seconds * 2 + 5
+    return settings.ai_max_retries + 1, settings.ai_timeout_seconds
+
+
+_openai_client: Any = None
+_openai_lock = threading.Lock()
+
+
+def _get_openai_client() -> Any:
+    global _openai_client
+    with _openai_lock:
+        if _openai_client is None:
+            from openai import AsyncOpenAI
+
+            # SDK 자동 재시도 끔 (백엔드4 모듈이 재시도 담당)
+            _openai_client = AsyncOpenAI(api_key=get_settings().ai_api_key, max_retries=0)
+        return _openai_client
+
+
+def call_ai(ai_input: Dict[str, Any]) -> Dict[str, Any]:
+    """백엔드4 함수 호출. 입력·출력 형식은 명세서 v02 5번 '백엔드4 함수 입력·출력 JSON'.
+    스레드 풀에서 실행되므로 비동기 함수를 asyncio.run 으로 돌립니다."""
+    if not ai_is_connected():
+        return _rule_based_recommendations(ai_input)
+
+    from ai.recommender import generate_recommendations
+
+    settings = get_settings()
+    return asyncio.run(generate_recommendations(
+        ai_input, client=_get_openai_client(), model=settings.ai_model, timeout_seconds=settings.ai_timeout_seconds,
+    ))
+
+
+# 품목 교체 후보 (AI 키 발급 전 임시 규칙)
+_REPLACEMENTS: Dict[str, Tuple[str, Optional[str], str]] = {
     "pet_drink": ("can_drink", "250ml", "같은 수량을 캔 음료로 바꾸면 개당 배출량이 절반 수준으로 줄어듭니다."),
     "pet_cup": ("paper_cup", None, "PET컵을 종이컵으로 바꾸면 개당 배출량이 줄어듭니다."),
 }
 
 
-def call_ai(ai_input: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    백엔드4 AI 함수 자리. 입력·출력 형식은 명세서 v02 5번 '백엔드4 함수 입력·출력 JSON'.
-
-    TODO(백엔드4): 아래처럼 교체
-        from ai.recommender import generate_recommendations
-        return generate_recommendations(ai_input, api_key=get_settings().ai_api_key)
-    """
-    settings = get_settings()
-    _api_key = settings.ai_api_key  # "여기에_AI_API_키_입력" 이면 아직 발급 전
-
+def _rule_based_recommendations(ai_input: Dict[str, Any]) -> Dict[str, Any]:
     max_recs = ai_input["constraints"]["max_recommendations"]
     recs: List[Dict[str, Any]] = []
     for item in sorted(ai_input["items"], key=lambda i: i["emission"], reverse=True):

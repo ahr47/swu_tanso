@@ -26,7 +26,8 @@ class Settings(BaseSettings):
     database_url: str = "여기에_DB_연결_주소_입력"
 
     # AI (백엔드4)
-    ai_api_key: str = "여기에_AI_API_키_입력"
+    ai_api_key: str = "여기에_AI_API_키_입력"  # OpenAI API 키
+    ai_model: str = "gpt-6.1-sol"
     ai_timeout_seconds: float = 30
     ai_max_retries: int = 1
     ai_max_recommendations: int = 5

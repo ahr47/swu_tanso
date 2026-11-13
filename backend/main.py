@@ -79,5 +79,13 @@ def _database_status() -> str:
 # 프론트 화면도 같은 서버에서 제공 (로컬 체험용): http://127.0.0.1:8000 하나로 화면 + API
 # API 경로(/api, /health, /docs)가 먼저 등록되어 있어서 우선합니다.
 FRONTEND_DIR = Path(__file__).resolve().parents[1] / "frontend"
+class NoCacheStaticFiles(StaticFiles):
+    """로컬 체험용: 코드를 고치면 새로고침만으로 바로 반영되게 캐시 끔"""
+    async def get_response(self, path, scope):
+        response = await super().get_response(path, scope)
+        response.headers["Cache-Control"] = "no-store"
+        return response
+
+
 if settings.serve_frontend and (FRONTEND_DIR / "index.html").exists():
-    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
+    app.mount("/", NoCacheStaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

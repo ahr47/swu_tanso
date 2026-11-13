@@ -6,6 +6,35 @@
 [data-node-id="24:585"]{height:auto!important;min-height:calc(100vh - 84px)}
 [data-name="Main Content Layout:margin"]>[data-name="Main Content Layout"]{margin-inline:auto}
 @media(min-width:1600px){#app>div>[data-name="Main"],#app>div>[data-name="Main Content Layout:margin"]{padding-inline:max(80px,calc((100% - 1440px)/2))}}
+/* 홈: 창이 좁아져도 잘리지 않게 (5단계 화살표·카드, AI 추천 금액, CTA 버튼, 카드 높이 통일). 모바일(640px 이하) 규칙이 아래에서 덮어씀 */
+@media(max-width:1350px){#app[data-screen="home"]>div>div:not(:first-child):not(:last-child),#app[data-screen="home"] [data-name="마지막 CTA"]{padding-inline:48px!important}}
+@media(min-width:641px){
+ #app[data-screen="home"] [data-name="이용 단계"]{max-width:1220px;margin-inline:auto}
+ #app[data-screen="home"] [data-name="단계 묶음"]{flex:0 0 calc((100% - 152px)/5 + 28px)!important;width:auto!important;min-width:0!important;overflow:visible!important}
+ #app[data-screen="home"] [data-name="단계 묶음"]:last-child{flex-basis:calc((100% - 152px)/5)!important}
+ #app[data-screen="home"] [data-name="단계 카드"]{flex:1 1 0!important;width:auto!important;min-width:0!important}
+ #app[data-screen="home"] [data-name="단계 카드"] p{white-space:normal!important;word-break:keep-all}
+ #app[data-screen="home"] [data-name="이용 단계"]{align-items:stretch!important}
+ #app[data-screen="home"] [data-name="단계 카드"]{align-self:stretch!important}
+}
+@media(min-width:641px) and (max-width:1000px){#app[data-screen="home"] [data-name="단계 카드"]{padding:14px!important}}
+#app[data-screen="home"] [data-name="추천 머리글"]>[data-name="제목 영역"],#app[data-screen="home"] [data-name="사례 머리글"]>[data-name="제목 영역"]{flex:1 1 auto!important;width:auto!important;min-width:0!important}
+#app[data-screen="home"] [data-name="AI 추천 태그"],#app[data-screen="home"] [data-name="사례 더보기"]{flex-shrink:0!important}
+#app[data-screen="home"] [data-name="추천 카드 목록"]{align-items:stretch!important}
+#app[data-screen="home"] [data-name="추천 카드 배치"]{min-width:0!important}
+#app[data-screen="home"] [data-name="추천 순위"]{min-height:30px;align-items:center!important}
+#app[data-screen="home"] [data-name="AI 추천 카드"]{flex:1 1 auto!important}
+@media(max-width:1350px){#app[data-screen="home"] [data-name="효과 지표"] p:last-child{font-size:20px!important}}
+@media(min-width:641px) and (max-width:1150px){#app[data-screen="home"] [data-name="효과 지표"]{flex-direction:column!important;gap:8px!important}#app[data-screen="home"] [data-name="효과 지표"]>div{flex:none!important;width:100%!important}}
+#app[data-screen="home"] [data-name="CTA 패널"]{gap:32px!important}
+#app[data-screen="home"] [data-name="CTA 문구"]{flex:1 1 auto!important;width:auto!important;min-width:0!important}
+@media(min-width:641px){#app[data-screen="home"] [data-name="CTA 문구"] p{white-space:normal!important;word-break:keep-all}}
+#app[data-screen="home"] [data-name="AI 추천 카드"] p,#app[data-screen="home"] [data-name="사례 카드"] p{word-break:keep-all}
+#app[data-screen="home"] [data-name="CTA 버튼"]{flex-shrink:0!important}
+@media(min-width:641px) and (max-width:1200px){#app[data-screen="home"] [data-name="CTA 패널"]{flex-direction:column!important;align-items:flex-start!important}#app[data-screen="home"] [data-name="CTA 문구"]{flex:none!important;width:100%!important}#app[data-screen="home"] [data-name="CTA 문구"]>*{max-width:100%!important}}
+#app[data-screen="home"] [data-name="사례 카드 목록"]{align-items:stretch!important}
+#app[data-screen="home"] [data-name="사례 카드"]{height:auto!important}
+#app[data-screen="home"] [data-name="사례 내용"]{flex:1 1 auto!important}
 @media(max-width:1200px){
  #app>div>[data-name="Header"],#app>div>[data-name="상단 내비게이션"]{padding-inline:28px!important}
  [data-name="Stepper"]{gap:2px!important}[data-name^="Step "]{width:64px!important}[data-name="Stepper"]>[data-name="Line"]{width:22px!important}

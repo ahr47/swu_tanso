@@ -35,6 +35,38 @@
 #app[data-screen="home"] [data-name="사례 카드 목록"]{align-items:stretch!important}
 #app[data-screen="home"] [data-name="사례 카드"]{height:auto!important}
 #app[data-screen="home"] [data-name="사례 내용"]{flex:1 1 auto!important}
+/* 행사 정보: 단위(명·원)와 숫자 증감 버튼이 겹치지 않게, 날짜는 칸 어디를 눌러도 달력이 열리게 */
+#app[data-screen="event"] .live-field{padding-right:44px}
+#app[data-screen="event"] .live-field[type="date"]{position:absolute;cursor:pointer;color:#012847}
+#app[data-screen="event"] .live-field[type="date"]::-webkit-calendar-picker-indicator{position:absolute;inset:0;width:auto;height:auto;opacity:0;cursor:pointer}
+#app[data-screen="event"] .live-field[type="date"]:invalid,#app[data-screen="event"] .live-field[type="date"][data-empty="true"]{color:#b8bdbb}
+/* 분석·추천·리포트: 1350px 이하 좌우 여백 줄이기, 두 칸 카드는 디자인 비율(716:460)로 함께 줄어들게 */
+@media(max-width:1350px){#app[data-screen="analysis"] [data-name="Content"],#app[data-screen^="recommend"] [data-name="Content"],#app[data-screen="report"] [data-name="Content"]{padding-inline:48px!important}}
+#app[data-screen="analysis"] [data-name^="Row / "]>[data-name^="Card / "],#app[data-screen="report"] [data-name="Row / Compare"]>[data-name^="Card / "]{min-width:0!important;width:auto!important}
+#app[data-screen="analysis"] [data-name="Card / Total"],#app[data-screen="analysis"] [data-name="Card / Bar chart"]{flex:716 1 0!important}
+#app[data-screen="analysis"] [data-name="Card / Insight"],#app[data-screen="analysis"] [data-name="Card / Donut"]{flex:460 1 0!important}
+#app[data-screen="report"] [data-name="Card / Grouped bar"]{flex:780 1 0!important}
+#app[data-screen="report"] [data-name="Card / Applied"]{flex:400 1 0!important}
+#app[data-screen="analysis"] [data-name="Card / Donut"] [data-name="Body"]{width:100%!important;max-width:100%;gap:20px;justify-content:center}
+#app[data-screen="analysis"] [data-name="Card / Donut"] [data-name="Donut"]{flex-shrink:0!important}
+#app[data-screen="analysis"] [data-name="Card / Donut"] [data-name="Legend"]{flex:1 1 auto!important;min-width:0!important;width:auto!important}
+#app[data-screen="analysis"] [data-name="Card / Insight"] p,#app[data-screen="analysis"] [data-name="Card / Insight"]>div:not([data-name]){width:auto!important;max-width:100%!important}
+#app[data-screen="analysis"] [data-name="Card / Insight"] p,#app[data-screen="report"] [data-name="Carbon Report"] p,#app[data-screen^="recommend"] [data-name^="Goal / "] p,#app[data-screen^="recommend"] [data-name^="Recommendation "] p{white-space:normal!important;word-break:keep-all}
+@media(min-width:641px) and (max-width:1000px){#app[data-screen="analysis"] [data-name^="Row / "],#app[data-screen="report"] [data-name="Row / Compare"]{flex-direction:column!important;align-items:stretch!important}#app[data-screen="analysis"] [data-name^="Row / "]>[data-name^="Card / "],#app[data-screen="report"] [data-name="Row / Compare"]>[data-name^="Card / "]{flex:none!important;width:100%!important}}
+/* 리포트: 큰 숫자가 넘치면 다음 줄로, 하단 배너 버튼이 문구와 겹치지 않게 */
+#app[data-screen="report"] [data-name^="KPI / "]{min-width:0!important}
+#app[data-screen="report"] [data-name^="KPI / "] [data-name="Value"],#app[data-screen="report"] [data-name^="KPI / "] [data-name="Value row"]{flex-wrap:wrap!important;row-gap:2px;width:auto!important;max-width:100%}
+#app[data-screen="report"] [data-name="Carbon Report"]{gap:24px!important}
+#app[data-screen="report"] [data-name="Carbon Report"]>[data-name="Frame"]{flex:1 1 auto!important;min-width:0!important;width:auto!important}
+#app[data-screen="report"] [data-name="Carbon Report"] [data-name="Frame"] [data-name="Frame"]{min-width:0!important;width:auto!important;flex:1 1 auto!important}
+#app[data-screen="report"] [data-name="Carbon Report"]>[data-name="Actions"]{flex-shrink:0!important}
+@media(min-width:641px) and (max-width:1200px){#app[data-screen="report"] [data-name="Carbon Report"]{flex-direction:column!important;align-items:flex-start!important;height:auto!important}}
+/* AI 추천: 개선 방향 카드 글자 잘림 */
+#app[data-screen^="recommend"] [data-name^="Goal / "]{min-width:0!important;height:auto!important;min-height:78px}
+#app[data-screen^="recommend"] [data-name^="Goal / "] [data-name]{min-width:0!important}
+#app[data-screen^="recommend"] [data-name^="Goal / "]>*:last-child{flex:1 1 auto!important;width:auto!important}
+@media(min-width:641px) and (max-width:1200px){#app[data-screen^="recommend"] [data-name="Goal options"]{flex-wrap:wrap!important}#app[data-screen^="recommend"] [data-name^="Goal / "]{flex:1 1 calc(50% - 12px)!important}}
+#app[data-screen^="recommend"] [data-name^="Recommendation "]>[data-name="Text"]{flex:1 1 auto!important;min-width:0!important;width:auto!important}
 @media(max-width:1200px){
  #app>div>[data-name="Header"],#app>div>[data-name="상단 내비게이션"]{padding-inline:28px!important}
  [data-name="Stepper"]{gap:2px!important}[data-name^="Step "]{width:64px!important}[data-name="Stepper"]>[data-name="Line"]{width:22px!important}
@@ -42,7 +74,7 @@
  [data-node-id="24:586"]{padding-inline:28px!important}
  [data-node-id="24:774"]{padding-inline:28px!important}
  [data-name="Aside - Left Sidebar: Category"]{width:210px!important}
- [data-name^="Card "]{min-width:0!important;width:100%!important}
+ #app[data-screen^="items-"] [data-name^="Card "]{min-width:0!important;width:100%!important}
 }
 @media(max-width:900px){
  #app>div>[data-name="Header"]{flex-wrap:wrap!important;gap:16px!important;padding:16px 24px!important}
@@ -120,9 +152,53 @@
  [data-name="Nav"]>a{width:calc(50% - 4px)!important;padding:8px!important}
  [data-name="Nav"]>a p{font-size:13px!important}
  [data-name="Section - Right: Search & Product 2x2 Grid"]{width:100%!important}
- [data-name^="Card "]{height:auto!important;min-height:80px;padding:12px!important}[data-name^="Card "] p{font-size:13px!important}
+ [data-name^="Card "]{height:auto!important;min-height:80px;padding:12px!important}#app[data-screen^="items-"] [data-name^="Card "] p{font-size:13px!important}
  .dialog-overlay{padding:12px}.dialog-overlay>.dialog-panel{max-height:calc(100dvh - 24px);border-radius:20px}
  .dialog-panel>div{padding:24px!important}.dialog-panel [data-name]{max-width:100%}
  .dialog-panel [data-name="Constraint checkboxes"],.dialog-panel [data-name="Constraints"]{flex-wrap:wrap!important;height:auto!important}
  .dialog-panel [data-name="Action row"]{height:auto!important;flex-wrap:wrap!important}.dialog-panel [data-name="Action row"]>p{display:none}
+}
+/* 모바일: 분석·추천 하단 버튼이 화면 밖으로 밀리지 않게, 품목 검색창 너비 */
+@media(max-width:640px){
+ #app[data-screen="analysis"] [data-name="Footer"],#app[data-screen^="recommend"] [data-name="Footer"]{flex-direction:column!important;align-items:stretch!important;gap:16px!important;height:auto!important;width:100%!important}
+ #app[data-screen="analysis"] [data-name="Footer"]>*,#app[data-screen^="recommend"] [data-name="Footer"]>*{width:100%!important;min-width:0!important;flex-wrap:wrap!important}
+ #app[data-screen="analysis"] [data-name="Footer"] [data-name^="Button / "],#app[data-screen^="recommend"] [data-name="Footer"] [data-name^="Button / "]{flex:1 1 0!important;min-width:0!important;justify-content:center!important;padding-inline:12px!important}
+ #app[data-screen="analysis"] [data-name="Footer"] [data-name^="Button / "] p,#app[data-screen^="recommend"] [data-name="Footer"] [data-name^="Button / "] p{white-space:normal!important;text-align:center;word-break:keep-all}
+ #app[data-screen^="items-"] [data-name="Category & Item Selection Panel"]>[data-name="Container"]{flex-direction:column!important;align-items:stretch!important;gap:16px!important;width:100%!important;height:auto!important}
+ #app[data-screen^="items-"] [data-name="Aside - Left Sidebar: Category"]{width:100%!important;height:auto!important;border:0!important;padding:0!important}
+ #app[data-screen^="items-"] [data-name="Nav"]{flex-direction:row!important;flex-wrap:wrap!important;gap:8px!important;width:100%!important}
+ #app[data-screen^="items-"] [data-name="Nav"]>*{width:auto!important;flex:1 1 calc(50% - 8px)!important;min-width:0!important}
+ #app[data-screen^="items-"] [data-name="Section - Right: Search & Product 2x2 Grid"]{width:100%!important;min-width:0!important;flex:none!important}
+ #app[data-screen^="items-"] [data-name="Search Field"],#app[data-screen^="items-"] [data-name="Search Field"] [data-name="Input"]{width:100%!important;min-width:0!important;max-width:100%!important}
+}
+/* 모바일: 분석·리포트·추천 카드 세로 배치, 높이는 내용에 맞게 */
+@media(max-width:640px){
+ #app[data-screen="analysis"] [data-name^="Row / "],#app[data-screen="report"] [data-name^="Row / "],#app[data-screen="report"] [data-name="Carbon Report"]{flex-direction:column!important;align-items:stretch!important;height:auto!important;width:100%!important;gap:16px!important}
+ #app[data-screen="analysis"] [data-name^="Row / "]>*,#app[data-screen="report"] [data-name^="Row / "]>*{flex:none!important;width:100%!important;min-width:0!important;height:auto!important}
+ #app[data-screen="analysis"] [data-name^="Card / "],#app[data-screen="report"] [data-name^="Card / "],#app[data-screen="report"] [data-name^="KPI / "]{height:auto!important;padding:20px!important}
+ #app[data-screen="analysis"] [data-name^="Card / "] *,#app[data-screen="report"] [data-name^="Card / "] *{max-width:100%}
+ #app[data-screen="analysis"] [data-name="Value row"]{flex-wrap:wrap!important;width:100%!important;height:auto!important;gap:12px!important}
+ #app[data-screen="analysis"] [data-name="Bars"]{height:auto!important;width:100%!important}
+ #app[data-screen="analysis"] [data-name^="Bar / "]{width:100%!important;flex-wrap:wrap!important;row-gap:4px}
+ #app[data-screen="analysis"] [data-name^="Bar / "]>[data-name="Track"]{flex:1 1 100%!important;order:3;width:100%!important}
+ #app[data-screen="analysis"] [data-name="Card / Donut"] [data-name="Body"]{flex-direction:column!important;height:auto!important;align-items:center!important}
+ #app[data-screen="analysis"] [data-name="Card / Donut"] [data-name="Legend"]{width:100%!important}
+ #app[data-screen="analysis"] [data-name="비용 합계 / 단가 미입력 제외"]{flex-direction:column!important;align-items:flex-start!important;height:auto!important;gap:12px!important}
+ #app[data-screen="analysis"] [data-name="비용 합계 / 단가 미입력 제외"]>*{width:100%!important;flex:none!important;align-items:flex-start!important}
+ #app[data-screen="analysis"] [data-name="비용 합계 / 단가 미입력 제외"] p{white-space:normal!important;text-align:left!important}
+ #app[data-screen="report"] [data-name="Chart"]{overflow-x:auto!important;width:100%!important;justify-content:flex-start!important}
+ #app[data-screen="report"] [data-name^="Group / "]{flex:0 0 auto!important}
+ #app[data-screen="report"] [data-name^="Applied / "],#app[data-screen="report"] [data-name="Total"]{width:100%!important}
+ #app[data-screen^="recommend"] [data-name="Goal options"]{flex-direction:column!important;height:auto!important;gap:10px!important}
+ #app[data-screen^="recommend"] [data-name^="Goal / "]{flex:none!important;width:100%!important}
+}
+@media(max-width:640px){
+ #app[data-screen="analysis"] [data-name="Footer"] [data-name="Frame"],#app[data-screen^="recommend"] [data-name="Footer"] [data-name="Frame"]{flex-direction:column!important;align-items:stretch!important;gap:10px!important}
+ #app[data-screen="analysis"] [data-name="Footer"] [data-name^="Button / "],#app[data-screen^="recommend"] [data-name="Footer"] [data-name^="Button / "]{flex:none!important;width:100%!important}
+ #app[data-screen^="recommend"] [data-name="Summary"],#app[data-screen^="recommend"] [data-name="Head"]{flex-wrap:wrap!important;height:auto!important;row-gap:8px}
+ #app[data-screen^="recommend"] [data-name="Summary"] p,#app[data-screen^="recommend"] [data-name="Head"] p{white-space:normal!important}
+ #app[data-screen="analysis"] [data-name="Top3"]{flex-wrap:wrap!important;height:auto!important;gap:8px!important}
+ #app[data-screen="report"] [data-name="Carbon Report"] [data-name="Frame"]{flex-direction:column!important;align-items:flex-start!important;height:auto!important;gap:12px!important}
+ #app[data-screen="report"] [data-name="Carbon Report"] p{height:auto!important;line-height:1.4!important}
+ #app[data-screen="report"] [data-name="Carbon Report"]>[data-name="Actions"],#app[data-screen="report"] [data-name="Carbon Report"] [data-name^="Button / "]{width:100%!important}
 }

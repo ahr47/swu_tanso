@@ -6,9 +6,11 @@ FastAPI 실행 (백엔드2)
 """
 import logging
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from core.config import get_settings
 from core.errors import register_error_handlers
@@ -72,3 +74,10 @@ def _database_status() -> str:
     except Exception:  # noqa: BLE001
         logging.getLogger("db").exception("DB 연결 확인 실패")
         return "error"
+
+
+# 프론트 화면도 같은 서버에서 제공 (로컬 체험용): http://127.0.0.1:8000 하나로 화면 + API
+# API 경로(/api, /health, /docs)가 먼저 등록되어 있어서 우선합니다.
+FRONTEND_DIR = Path(__file__).resolve().parents[1] / "frontend"
+if settings.serve_frontend and (FRONTEND_DIR / "index.html").exists():
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")

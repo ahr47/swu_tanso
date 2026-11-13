@@ -70,7 +70,7 @@ def _build_ai_input(event: Dict[str, Any], rows: List[Dict[str, Any]], analysis:
     used_categories = {adapters.get_item(i)["category"] for i in used_ids}
     alternatives = [
         {"item_id": i["item_id"], "item_name": i["item_name"], "category": i["category"],
-         "input_unit": i["input_unit"], "variants": [v["variant"] for v in i["variants"]] if i["variants"] else None}
+         "input_unit": i["input_unit"], "variants": [v["variant"] for v in i["variants"]] if i["variants"] else []}
         for i in adapters.list_active_items()
         if i["category"] in used_categories and i["item_id"] not in used_ids and i["input_method"] != "fixed_use"
     ]
@@ -91,12 +91,12 @@ def _build_ai_input(event: Dict[str, Any], rows: List[Dict[str, Any]], analysis:
 
 def _call_ai_with_retry(ai_input: Dict[str, Any]) -> AiOutput:
     """시간 제한 + 재시도. 끝내 실패하면 503 AI_UNAVAILABLE (이전 추천은 그대로 둠)"""
-    settings = get_settings()
-    attempts = settings.ai_max_retries + 1
+    # 실제 AI 는 백엔드4 모듈이 1회 재시도를 직접 하므로 여기서는 1번만 부름 (adapters.ai_call_policy)
+    attempts, wait_seconds = adapters.ai_call_policy()
     for attempt in range(1, attempts + 1):
         try:
             future = _ai_executor.submit(adapters.call_ai, ai_input)
-            raw = future.result(timeout=settings.ai_timeout_seconds)
+            raw = future.result(timeout=wait_seconds)
             return AiOutput.model_validate(raw)
         except FutureTimeoutError:
             logger.warning("AI 호출 시간 초과 (%s/%s)", attempt, attempts)

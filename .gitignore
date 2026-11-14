@@ -18,3 +18,4 @@ build/
 pgdata/
 pgdata.log
 .pglite/
+pgdata.err.log

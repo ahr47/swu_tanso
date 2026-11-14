@@ -10,6 +10,9 @@ API 필드명세서 v02 기준 FastAPI 서버입니다.
 ./run.sh          # 맥은 start.command 더블클릭도 가능
 ```
 
+**윈도우:** 저장소 폴더의 `start.bat` 을 더블클릭하세요 (또는 터미널에서 `.\start.bat`).
+Python 설치 시 "Add python.exe to PATH" 를 꼭 체크하세요. 종료는 열린 창에서 Ctrl+C 또는 창 닫기.
+
 - 화면: http://127.0.0.1:8000  /  API 문서: http://127.0.0.1:8000/docs
 - 종료: 실행한 창에서 Ctrl+C
 - 필요한 것: Python 3.10+, Node.js 20+. 처음 한 번은 설치 때문에 1~2분 걸리고 인터넷이 필요합니다.

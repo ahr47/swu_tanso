@@ -1,0 +1,61 @@
+{
+  "event": {
+    "event_name": "경영학과 학술제",
+    "event_type": "학과·학생회 행사",
+    "participants": 100,
+    "budget": 1000000,
+    "description": null
+  },
+  "items": [
+    {
+      "item_id": "eco_bag",
+      "item_name": "에코백",
+      "category": "굿즈",
+      "input_method": "count_only",
+      "input_unit": "개",
+      "quantity": 50,
+      "variant": null,
+      "unit_price": 6750,
+      "emission": 91.65,
+      "ratio": 91.07,
+      "cost": 337500
+    },
+    {
+      "item_id": "pet_drink",
+      "item_name": "페트 음료",
+      "category": "음료·일회용품",
+      "input_method": "count_variant",
+      "input_unit": "개",
+      "quantity": 50,
+      "variant": "500ml",
+      "unit_price": null,
+      "emission": 8.99,
+      "ratio": 8.93,
+      "cost": null
+    }
+  ],
+  "analysis": {
+    "total_emission": 100.64,
+    "total_cost": 337500,
+    "top_items": ["eco_bag", "pet_drink"]
+  },
+  "alternatives": [
+    {
+      "item_id": "can_drink",
+      "item_name": "캔 음료",
+      "category": "음료·일회용품",
+      "input_unit": "개",
+      "variants": ["210ml", "250ml"]
+    }
+  ],
+  "goal": {
+    "budget_increase_allowed": false,
+    "target_reduction_percent": null,
+    "preserve_event_quality": true,
+    "custom_condition": null
+  },
+  "constraints": {
+    "allowed_action_types": ["reduce_quantity", "replace_item"],
+    "max_recommendations": 5
+  }
+}
